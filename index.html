@@ -9,38 +9,29 @@
         body { margin: 0; background: #000; overflow: hidden; font-family: 'Orbitron', sans-serif; color: #00ffff; }
         #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         
-        /* Fixed Boot Screen with Small Professional Text */
-        #boot-screen { position: absolute; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        #boot-screen { position: absolute; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: 0.5s; }
         
         .brand-name-small {
-            font-size: 16px; /* Reduced to match button size */
-            font-weight: 400; 
-            letter-spacing: 5px; 
-            margin-bottom: 25px;
-            color: rgba(0, 255, 255, 0.7);
-            text-shadow: 0 0 10px #00ffff;
+            font-size: 16px; font-weight: 400; letter-spacing: 5px; margin-bottom: 25px;
+            color: #00ffff; text-shadow: 0 0 10px #00ffff; text-transform: uppercase;
         }
 
         #boot-btn { 
             background: transparent; color: #00ffff; border: 1px solid #00ffff; 
-            padding: 12px 35px; font-size: 16px; cursor: pointer; font-family: 'Orbitron';
-            text-transform: uppercase; letter-spacing: 2px;
-            transition: 0.3s; 
+            padding: 12px 35px; font-size: 14px; cursor: pointer; font-family: 'Orbitron';
+            text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; 
         }
-        #boot-btn:hover { background: rgba(0, 255, 255, 0.1); box-shadow: 0 0 20px #00ffff; }
+        #boot-btn:hover { background: rgba(0, 255, 255, 0.2); box-shadow: 0 0 20px #00ffff; }
 
-        /* Login Interface (Professional English) */
         .auth-container {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0, 10, 20, 0.95); padding: 35px; border: 1px solid #00ffff;
-            border-radius: 5px; z-index: 100; text-align: center; width: 85%; max-width: 360px;
-            display: none; pointer-events: all;
+            background: rgba(0, 10, 20, 0.9); padding: 35px; border: 1px solid #00ffff;
+            z-index: 100; text-align: center; width: 85%; max-width: 360px;
+            display: none; pointer-events: all; box-shadow: 0 0 30px rgba(0,255,255,0.1);
         }
         h2 { font-size: 18px; letter-spacing: 4px; color: #fff; margin-bottom: 30px; }
-        input { width: 90%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.03); border: none; border-bottom: 1px solid rgba(0,255,255,0.5); color: #fff; font-family: 'Orbitron'; outline: none; }
-        input:focus { border-bottom: 1px solid #00ffff; background: rgba(0,255,255,0.05); }
-        .action-btn { background: transparent; color: #00ffff; border: 1px solid #00ffff; padding: 12px; cursor: pointer; width: 100%; margin-top: 25px; font-weight: bold; font-family: 'Orbitron'; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; }
-        .action-btn:hover { background: #00ffff; color: #000; }
+        input { width: 90%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.05); border: none; border-bottom: 1px solid #00ffff; color: #fff; font-family: 'Orbitron'; outline: none; }
+        .action-btn { background: #00ffff; color: #000; border: none; padding: 12px; cursor: pointer; width: 100%; margin-top: 25px; font-weight: bold; font-family: 'Orbitron'; text-transform: uppercase; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -50,8 +41,8 @@
         <button id="boot-btn" onclick="startJarvis()">INITIALIZE SYSTEM</button>
     </div>
 
-    <audio id="avengersTheme" loop preload="auto">
-        <source src="https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Avengers+Theme&filename=mt/MTI0NTE2OTM0MTI0NjAy_0G_2bjm_2fgX_2f0.mp3" type="audio/mpeg">
+    <audio id="avengersTheme" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
     </audio>
 
     <div id="login-box" class="auth-container">
@@ -59,17 +50,15 @@
         <input type="email" id="email" placeholder="GMAIL ADDRESS">
         <input type="password" id="pass" placeholder="ACCESS KEY">
         <button class="action-btn" onclick="handleLogin()">LOGIN</button>
-        <p style="font-size: 10px; margin-top: 15px; cursor: pointer; color: #444;" onclick="toggleAuth()">New User? Register Access</p>
+        <p style="font-size: 10px; margin-top: 15px; cursor: pointer; color: #00ffff;" onclick="toggleAuth()">New User? Create Access</p>
     </div>
 
     <div id="canvas-container"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        // Your Firebase Config (Do Not Change)
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        
         const firebaseConfig = {
             apiKey: "AIzaSyATc8fbfL086MbvTOVynsPc4ZSHtWcRuQc",
             authDomain: "jarvis-core-v1-ac8fd.firebaseapp.com",
@@ -83,17 +72,15 @@
         const auth = getAuth(app);
         const theme = document.getElementById('avengersTheme');
 
-        // Music & Startup Fix
         window.startJarvis = () => {
-            // Force music to play
             theme.volume = 0.5;
-            theme.play().then(() => {
-                console.log("Theme started.");
-            }).catch(e => {
-                console.log("Autoplay block detected, but system is loading.");
-            });
-            // Hide boot screen
-            document.getElementById('boot-screen').style.display = 'none';
+            theme.play();
+            document.getElementById('boot-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('boot-screen').style.display = 'none';
+                // लॉगिन पेज यहाँ से दिखेगा
+                document.getElementById('login-box').style.display = 'block';
+            }, 500);
         };
 
         window.handleLogin = async () => {
@@ -101,11 +88,17 @@
             const pass = document.getElementById('pass').value;
             try {
                 await signInWithEmailAndPassword(auth, email, pass);
-                // Stop music after successful login
                 theme.pause();
-                location.reload(); 
-            } catch (e) { alert("Access Denied: " + e.message); }
+                alert("Access Granted Boss!");
+            } catch (e) { alert("Error: " + e.message); }
         };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                theme.pause();
+                document.getElementById('login-box').innerHTML = "<h2>WELCOME BACK BOSS</h2>";
+            }
+        });
     </script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -115,7 +108,7 @@
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
-        const core = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 3), new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.5 }));
+        const core = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 3), new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.3 }));
         scene.add(core); camera.position.z = 5;
         function animate() { requestAnimationFrame(animate); core.rotation.y += 0.005; renderer.render(scene, camera); }
         animate();
