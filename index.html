@@ -3,41 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIKASH INDUSTRIES | J.A.R.V.I.S.</title>
+    <title>J.A.R.V.I.S. | VIKASH INDUSTRIES</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; background: #000; overflow: hidden; font-family: 'Orbitron', sans-serif; color: #00ffff; }
         #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         
-        #boot-screen { position: absolute; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .brand-small { font-size: 14px; letter-spacing: 5px; margin-bottom: 20px; color: #00ffff; text-transform: uppercase; }
-        #boot-btn { background: transparent; color: #00ffff; border: 1px solid #00ffff; padding: 12px 35px; font-size: 14px; cursor: pointer; font-family: 'Orbitron'; letter-spacing: 2px; }
+        /* Boot Screen Style */
+        #boot-screen { position: absolute; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: 0.5s; }
+        .brand-small { font-size: 14px; letter-spacing: 5px; margin-bottom: 20px; color: #00ffff; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
+        #boot-btn { background: transparent; color: #00ffff; border: 1px solid #00ffff; padding: 12px 35px; font-size: 14px; cursor: pointer; font-family: 'Orbitron'; letter-spacing: 2px; text-transform: uppercase; transition: 0.3s; }
+        #boot-btn:hover { background: rgba(0, 255, 255, 0.2); box-shadow: 0 0 20px #00ffff; }
 
+        /* Login Box Style */
         .auth-container {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: rgba(0, 10, 20, 0.95); padding: 35px; border: 1px solid #00ffff;
-            z-index: 100; text-align: center; width: 85%; max-width: 350px; display: none;
+            z-index: 100; text-align: center; width: 85%; max-width: 350px; display: none; box-shadow: 0 0 30px rgba(0,255,255,0.1);
         }
+        h2 { font-size: 18px; letter-spacing: 4px; color: #fff; margin-bottom: 30px; text-transform: uppercase; }
         input { width: 90%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.05); border: none; border-bottom: 1px solid #00ffff; color: #fff; font-family: 'Orbitron'; outline: none; }
-        .action-btn { background: #00ffff; color: #000; border: none; padding: 12px; cursor: pointer; width: 100%; margin-top: 20px; font-weight: bold; font-family: 'Orbitron'; letter-spacing: 2px; }
+        .action-btn { background: #00ffff; color: #000; border: none; padding: 12px; cursor: pointer; width: 100%; margin-top: 25px; font-weight: bold; font-family: 'Orbitron'; text-transform: uppercase; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
     <div id="boot-screen">
         <div class="brand-small">VIKASH INDUSTRIES</div>
-        <button id="boot-btn" onclick="runJarvis()">INITIALIZE SYSTEM</button>
+        <button id="boot-btn" onclick="startJarvis()">INITIALIZE SYSTEM</button>
     </div>
 
-    <audio id="audioEngine" loop>
-        <source src="Avengers infinity war background music by MARVEL STUDIO BGMs.mp3" type="audio/mpeg">
+    <audio id="avengersTheme" loop preload="auto">
+        <source src="Theme.mp3" type="audio/mpeg">
     </audio>
 
     <div id="login-box" class="auth-container">
-        <h2 style="font-size: 18px; color: #fff; margin-bottom: 25px;">LOGIN</h2>
+        <h2>LOGIN</h2>
         <input type="email" id="email" placeholder="Email">
         <input type="password" id="pass" placeholder="Password">
-        <button class="action-btn" onclick="authProcess()">ACCESS CORE</button>
+        <button class="action-btn" onclick="handleLogin()">ACCESS CORE</button>
     </div>
 
     <div id="canvas-container"></div>
@@ -57,25 +61,26 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const player = document.getElementById('audioEngine');
+        const theme = document.getElementById('avengersTheme');
 
-        window.runJarvis = () => {
-            player.volume = 0.6;
-            player.play().catch(err => alert("Play error: Please check file name."));
+        window.startJarvis = () => {
+            theme.volume = 0.6;
+            theme.play().catch(e => console.log("Audio play failed"));
             document.getElementById('boot-screen').style.display = 'none';
             document.getElementById('login-box').style.display = 'block';
         };
 
-        window.authProcess = async () => {
+        window.handleLogin = async () => {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
             try {
                 await signInWithEmailAndPassword(auth, email, pass);
-                player.pause();
-                alert("Identity Confirmed. Welcome Boss!");
-            } catch (e) { alert("Denied: " + e.message); }
+                theme.pause();
+                alert("Identity Confirmed Boss!");
+            } catch (e) { alert("Access Denied: " + e.message); }
         };
     </script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         const scene = new THREE.Scene();
@@ -83,7 +88,7 @@
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
-        const core = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 3), new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.15 }));
+        const core = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 3), new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.2 }));
         scene.add(core); camera.position.z = 5;
         function animate() { requestAnimationFrame(animate); core.rotation.y += 0.005; renderer.render(scene, camera); }
         animate();
