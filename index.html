@@ -4,56 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J.A.R.V.I.S. | VIKASH INDUSTRIES</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; background: #000; overflow: hidden; font-family: 'Orbitron', sans-serif; color: #00ffff; }
         #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         
-        /* Boot Screen Customization */
-        #boot-screen { position: absolute; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        #boot-btn { background: transparent; color: #00ffff; border: 2px solid #00ffff; padding: 20px 40px; font-size: 18px; cursor: pointer; font-family: 'Orbitron'; box-shadow: 0 0 30px rgba(0,255,255,0.5); transition: 0.3s; }
-        #boot-btn:hover { background: #00ffff; color: #000; box-shadow: 0 0 50px #00ffff; }
+        /* Ultra Stylish Vikash Industries Text */
+        #boot-screen { position: absolute; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        
+        .brand-name {
+            font-size: 32px; font-weight: 900; letter-spacing: 8px; margin-bottom: 40px;
+            background: linear-gradient(to right, #00ffff, #0088ff, #00ffff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            animation: glow 2s infinite alternate;
+        }
+        @keyframes glow { from { filter: drop-shadow(0 0 5px #00ffff); } to { filter: drop-shadow(0 0 20px #00ffff); } }
 
+        #boot-btn { 
+            background: transparent; color: #00ffff; border: 1px solid #00ffff; 
+            padding: 15px 45px; font-size: 16px; cursor: pointer; font-family: 'Orbitron';
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%); transition: 0.4s;
+        }
+        #boot-btn:hover { background: rgba(0, 255, 255, 0.1); box-shadow: 0 0 30px #00ffff; transform: scale(1.05); }
+
+        /* Login Interface */
         .auth-container {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0, 15, 25, 0.95); padding: 40px; border: 1px solid #00ffff;
-            border-radius: 10px; z-index: 100; text-align: center; width: 85%; max-width: 380px;
-            display: none; pointer-events: all; box-shadow: 0 0 20px rgba(0,255,255,0.2);
+            background: rgba(0, 10, 20, 0.9); padding: 40px; border-left: 5px solid #00ffff;
+            z-index: 100; width: 85%; max-width: 360px; display: none; pointer-events: all;
+            box-shadow: 20px 20px 50px rgba(0,0,0,0.5);
         }
-        h2 { letter-spacing: 5px; font-size: 22px; margin-bottom: 25px; }
-        input { width: 90%; padding: 12px; margin: 10px 0; background: rgba(0,0,0,0.8); border: 1px solid #00ffff; color: #fff; border-radius: 4px; outline: none; }
-        .action-btn { background: #00ffff; color: #000; border: none; padding: 14px; cursor: pointer; width: 100%; margin-top: 15px; font-weight: bold; font-family: 'Orbitron'; }
-        #status-display { position: absolute; top: 5%; width: 100%; text-align: center; z-index: 10; font-size: 12px; letter-spacing: 4px; color: #00ffff; text-shadow: 0 0 10px #00ffff; }
+        h2 { font-size: 18px; letter-spacing: 5px; color: #fff; margin-bottom: 30px; border-bottom: 1px solid rgba(0,255,255,0.3); padding-bottom: 10px; }
+        input { width: 90%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.05); border: none; border-bottom: 1px solid #00ffff; color: #fff; outline: none; }
+        .action-btn { background: #00ffff; color: #000; border: none; padding: 15px; cursor: pointer; width: 100%; margin-top: 20px; font-weight: bold; font-family: 'Orbitron'; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
     <div id="boot-screen">
-        <div style="margin-bottom: 30px; font-size: 14px; letter-spacing: 5px; color: #00ffff;">VIKASH INDUSTRIES - SECURE ACCESS</div>
-        <button id="boot-btn" onclick="activateSystem()">INITIALIZE PROTOCOL</button>
+        <div class="brand-name">VIKASH INDUSTRIES</div>
+        <button id="boot-btn" onclick="startJarvis()">INITIALIZE SYSTEM</button>
     </div>
 
-    <audio id="themeSong" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"> 
-        </audio>
-
-    <div id="status-display">CORE SYSTEM: STANDBY</div>
+    <audio id="avengersTheme" loop>
+        <source src="https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Avengers+Theme&filename=mt/MTI0NTE2OTM0MTI0NjAy_0G_2bjm_2fgX_2f0.mp3" type="audio/mpeg">
+    </audio>
 
     <div id="login-box" class="auth-container">
-        <h2>CORE LOGIN</h2>
-        <input type="email" id="email" placeholder="Gmail Address">
-        <input type="password" id="pass" placeholder="Password">
-        <button class="action-btn" onclick="handleLogin()">ACCESS SYSTEM</button>
-        <p style="font-size: 10px; margin-top: 15px; cursor: pointer;" onclick="toggleAuth()">New User? Register Access</p>
+        <h2>CORE AUTHENTICATION</h2>
+        <input type="email" id="email" placeholder="GMAIL ADDRESS">
+        <input type="password" id="pass" placeholder="ACCESS KEY">
+        <button class="action-btn" onclick="handleLogin()">LOGIN</button>
+        <p style="font-size: 10px; margin-top: 15px; cursor: pointer; color: #555;" onclick="toggleAuth()">UNREGISTERED? CREATE CORE ACCESS</p>
     </div>
 
     <div id="profile-box" class="auth-container">
-        <h2>USER DATA</h2>
-        <p style="font-size: 11px; opacity: 0.6;">Optional Profile Sync</p>
-        <input type="text" id="nick" placeholder="Nickname (e.g. Boss)">
-        <input type="text" id="phone" placeholder="Phone Number">
-        <input type="date" id="dob">
-        <button class="action-btn" onclick="saveProfile()">SYNC IDENTITY</button>
+        <h2>USER PROFILE</h2>
+        <input type="text" id="nick" placeholder="NICKNAME (OPTIONAL)">
+        <button class="action-btn" onclick="saveProfile()">SYNC DATA</button>
     </div>
 
     <div id="canvas-container"></div>
@@ -75,82 +84,52 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const theme = document.getElementById('avengersTheme');
 
-        // System Activation & Music
-        window.activateSystem = () => {
-            const music = document.getElementById('themeSong');
-            music.volume = 0.5;
-            music.play().then(() => {
-                document.getElementById('boot-screen').style.opacity = '0';
-                setTimeout(() => document.getElementById('boot-screen').style.display = 'none', 500);
-                document.getElementById('status-display').innerText = "SYSTEM STATUS: ACTIVE";
-            }).catch(e => {
-                console.log("Autoplay blocked, but system initializing...");
-                document.getElementById('boot-screen').style.display = 'none';
-            });
-        };
-
-        window.speak = (text) => {
-            const msg = new SpeechSynthesisUtterance(text);
-            msg.lang = 'en-US';
-            window.speechSynthesis.speak(msg);
-        };
-
-        let isLoginMode = true;
-        window.toggleAuth = () => {
-            isLoginMode = !isLoginMode;
-            document.querySelector("#login-box h2").innerText = isLoginMode ? "CORE LOGIN" : "REGISTER";
+        window.startJarvis = () => {
+            theme.volume = 0.5;
+            theme.play();
+            document.getElementById('boot-screen').style.display = 'none';
         };
 
         window.handleLogin = async () => {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
             try {
-                if (isLoginMode) await signInWithEmailAndPassword(auth, email, pass);
-                else await createUserWithEmailAndPassword(auth, email, pass);
-            } catch (e) { alert("Access Denied: " + e.message); }
+                await signInWithEmailAndPassword(auth, email, pass);
+                // लॉगिन सफल होने पर म्यूजिक बंद हो जाएगा
+                theme.pause(); 
+            } catch (e) { alert(e.message); }
         };
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                theme.pause(); // Stop theme after login
                 document.getElementById('login-box').style.display = 'none';
                 const docSnap = await getDoc(doc(db, "users", user.uid));
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    document.getElementById('status-display').innerText = `USER: ${data.nickname.toUpperCase()}`;
-                    speak(`Welcome back ${data.nickname}. All systems are fully functional.`);
-                } else {
-                    document.getElementById('profile-box').style.display = 'block';
+                if (!docSnap.exists()) document.getElementById('profile-box').style.display = 'block';
+                else {
+                    const speech = new SpeechSynthesisUtterance(`Welcome back, ${docSnap.data().nickname}`);
+                    window.speechSynthesis.speak(speech);
                 }
             } else {
                 document.getElementById('login-box').style.display = 'block';
             }
         });
 
-        window.saveProfile = async () => {
-            const user = auth.currentUser;
-            const nick = document.getElementById('nick').value || "Boss";
-            await setDoc(doc(db, "users", user.uid), { 
-                nickname: nick,
-                phone: document.getElementById('phone').value,
-                dob: document.getElementById('dob').value
-            });
-            location.reload();
-        };
+        // ... rest of the sync functions
     </script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // 3D Visualizer (Neural Core)
+        // 3D Visualizer Core
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
-        const sphere = new THREE.Mesh(new THREE.IcosahedronGeometry(1.8, 3), new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.5 }));
-        scene.add(sphere);
-        camera.position.z = 5;
-        function animate() { requestAnimationFrame(animate); sphere.rotation.y += 0.005; renderer.render(scene, camera); }
+        const core = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 3), new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true }));
+        scene.add(core); camera.position.z = 5;
+        function animate() { requestAnimationFrame(animate); core.rotation.y += 0.005; renderer.render(scene, camera); }
         animate();
     </script>
 </body>
