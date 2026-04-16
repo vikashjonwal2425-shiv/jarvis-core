@@ -4,50 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J.A.R.V.I.S. | VIKASH INDUSTRIES</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; background: #000; overflow: hidden; font-family: 'Orbitron', sans-serif; color: #00ffff; }
         #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         
-        /* Ultra Stylish Vikash Industries Text */
+        /* Fixed Boot Screen with Small Professional Text */
         #boot-screen { position: absolute; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         
-        .brand-name {
-            font-size: 32px; font-weight: 900; letter-spacing: 8px; margin-bottom: 40px;
-            background: linear-gradient(to right, #00ffff, #0088ff, #00ffff);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-            animation: glow 2s infinite alternate;
+        .brand-name-small {
+            font-size: 16px; /* Reduced to match button size */
+            font-weight: 400; 
+            letter-spacing: 5px; 
+            margin-bottom: 25px;
+            color: rgba(0, 255, 255, 0.7);
+            text-shadow: 0 0 10px #00ffff;
         }
-        @keyframes glow { from { filter: drop-shadow(0 0 5px #00ffff); } to { filter: drop-shadow(0 0 20px #00ffff); } }
 
         #boot-btn { 
             background: transparent; color: #00ffff; border: 1px solid #00ffff; 
-            padding: 15px 45px; font-size: 16px; cursor: pointer; font-family: 'Orbitron';
-            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%); transition: 0.4s;
+            padding: 12px 35px; font-size: 16px; cursor: pointer; font-family: 'Orbitron';
+            text-transform: uppercase; letter-spacing: 2px;
+            transition: 0.3s; 
         }
-        #boot-btn:hover { background: rgba(0, 255, 255, 0.1); box-shadow: 0 0 30px #00ffff; transform: scale(1.05); }
+        #boot-btn:hover { background: rgba(0, 255, 255, 0.1); box-shadow: 0 0 20px #00ffff; }
 
-        /* Login Interface */
+        /* Login Interface (Professional English) */
         .auth-container {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0, 10, 20, 0.9); padding: 40px; border-left: 5px solid #00ffff;
-            z-index: 100; width: 85%; max-width: 360px; display: none; pointer-events: all;
-            box-shadow: 20px 20px 50px rgba(0,0,0,0.5);
+            background: rgba(0, 10, 20, 0.95); padding: 35px; border: 1px solid #00ffff;
+            border-radius: 5px; z-index: 100; text-align: center; width: 85%; max-width: 360px;
+            display: none; pointer-events: all;
         }
-        h2 { font-size: 18px; letter-spacing: 5px; color: #fff; margin-bottom: 30px; border-bottom: 1px solid rgba(0,255,255,0.3); padding-bottom: 10px; }
-        input { width: 90%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.05); border: none; border-bottom: 1px solid #00ffff; color: #fff; outline: none; }
-        .action-btn { background: #00ffff; color: #000; border: none; padding: 15px; cursor: pointer; width: 100%; margin-top: 20px; font-weight: bold; font-family: 'Orbitron'; letter-spacing: 2px; }
+        h2 { font-size: 18px; letter-spacing: 4px; color: #fff; margin-bottom: 30px; }
+        input { width: 90%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.03); border: none; border-bottom: 1px solid rgba(0,255,255,0.5); color: #fff; font-family: 'Orbitron'; outline: none; }
+        input:focus { border-bottom: 1px solid #00ffff; background: rgba(0,255,255,0.05); }
+        .action-btn { background: transparent; color: #00ffff; border: 1px solid #00ffff; padding: 12px; cursor: pointer; width: 100%; margin-top: 25px; font-weight: bold; font-family: 'Orbitron'; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; }
+        .action-btn:hover { background: #00ffff; color: #000; }
     </style>
 </head>
 <body>
 
     <div id="boot-screen">
-        <div class="brand-name">VIKASH INDUSTRIES</div>
+        <div class="brand-name-small">VIKASH INDUSTRIES</div>
         <button id="boot-btn" onclick="startJarvis()">INITIALIZE SYSTEM</button>
     </div>
 
-    <audio id="avengersTheme" loop>
+    <audio id="avengersTheme" loop preload="auto">
         <source src="https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Avengers+Theme&filename=mt/MTI0NTE2OTM0MTI0NjAy_0G_2bjm_2fgX_2f0.mp3" type="audio/mpeg">
     </audio>
 
@@ -56,22 +59,17 @@
         <input type="email" id="email" placeholder="GMAIL ADDRESS">
         <input type="password" id="pass" placeholder="ACCESS KEY">
         <button class="action-btn" onclick="handleLogin()">LOGIN</button>
-        <p style="font-size: 10px; margin-top: 15px; cursor: pointer; color: #555;" onclick="toggleAuth()">UNREGISTERED? CREATE CORE ACCESS</p>
-    </div>
-
-    <div id="profile-box" class="auth-container">
-        <h2>USER PROFILE</h2>
-        <input type="text" id="nick" placeholder="NICKNAME (OPTIONAL)">
-        <button class="action-btn" onclick="saveProfile()">SYNC DATA</button>
+        <p style="font-size: 10px; margin-top: 15px; cursor: pointer; color: #444;" onclick="toggleAuth()">New User? Register Access</p>
     </div>
 
     <div id="canvas-container"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // Your Firebase Config (Do Not Change)
         const firebaseConfig = {
             apiKey: "AIzaSyATc8fbfL086MbvTOVynsPc4ZSHtWcRuQc",
             authDomain: "jarvis-core-v1-ac8fd.firebaseapp.com",
@@ -83,12 +81,18 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
         const theme = document.getElementById('avengersTheme');
 
+        // Music & Startup Fix
         window.startJarvis = () => {
+            // Force music to play
             theme.volume = 0.5;
-            theme.play();
+            theme.play().then(() => {
+                console.log("Theme started.");
+            }).catch(e => {
+                console.log("Autoplay block detected, but system is loading.");
+            });
+            // Hide boot screen
             document.getElementById('boot-screen').style.display = 'none';
         };
 
@@ -97,37 +101,21 @@
             const pass = document.getElementById('pass').value;
             try {
                 await signInWithEmailAndPassword(auth, email, pass);
-                // लॉगिन सफल होने पर म्यूजिक बंद हो जाएगा
-                theme.pause(); 
-            } catch (e) { alert(e.message); }
+                // Stop music after successful login
+                theme.pause();
+                location.reload(); 
+            } catch (e) { alert("Access Denied: " + e.message); }
         };
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                theme.pause(); // Stop theme after login
-                document.getElementById('login-box').style.display = 'none';
-                const docSnap = await getDoc(doc(db, "users", user.uid));
-                if (!docSnap.exists()) document.getElementById('profile-box').style.display = 'block';
-                else {
-                    const speech = new SpeechSynthesisUtterance(`Welcome back, ${docSnap.data().nickname}`);
-                    window.speechSynthesis.speak(speech);
-                }
-            } else {
-                document.getElementById('login-box').style.display = 'block';
-            }
-        });
-
-        // ... rest of the sync functions
     </script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // 3D Visualizer Core
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
-        const core = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 3), new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true }));
+        const core = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 3), new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.5 }));
         scene.add(core); camera.position.z = 5;
         function animate() { requestAnimationFrame(animate); core.rotation.y += 0.005; renderer.render(scene, camera); }
         animate();
