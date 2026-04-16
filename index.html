@@ -3,52 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S. | Protocol</title>
+    <title>J.A.R.V.I.S. | VIKASH INDUSTRIES</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; background: #000; overflow: hidden; font-family: 'Orbitron', sans-serif; color: #00ffff; }
         #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         
-        /* Initial Boot Button */
+        /* Boot Screen Customization */
         #boot-screen { position: absolute; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        #boot-btn { background: transparent; color: #00ffff; border: 2px solid #00ffff; padding: 20px 40px; font-size: 20px; cursor: pointer; font-family: 'Orbitron'; box-shadow: 0 0 20px #00ffff; }
-        #boot-btn:hover { background: #00ffff; color: #000; }
+        #boot-btn { background: transparent; color: #00ffff; border: 2px solid #00ffff; padding: 20px 40px; font-size: 18px; cursor: pointer; font-family: 'Orbitron'; box-shadow: 0 0 30px rgba(0,255,255,0.5); transition: 0.3s; }
+        #boot-btn:hover { background: #00ffff; color: #000; box-shadow: 0 0 50px #00ffff; }
 
         .auth-container {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0, 20, 35, 0.9); padding: 40px; border: 2px solid #00ffff;
-            border-radius: 15px; z-index: 100; text-align: center; width: 85%; max-width: 380px;
-            display: none; pointer-events: all;
+            background: rgba(0, 15, 25, 0.95); padding: 40px; border: 1px solid #00ffff;
+            border-radius: 10px; z-index: 100; text-align: center; width: 85%; max-width: 380px;
+            display: none; pointer-events: all; box-shadow: 0 0 20px rgba(0,255,255,0.2);
         }
-        input { width: 90%; padding: 12px; margin: 10px 0; background: rgba(0,0,0,0.7); border: 1px solid #00ffff; color: #fff; border-radius: 5px; outline: none; }
-        button.action-btn { background: transparent; color: #00ffff; border: 1px solid #00ffff; padding: 12px; cursor: pointer; width: 100%; margin-top: 15px; font-weight: bold; }
-        #status-text { position: absolute; top: 5%; width: 100%; text-align: center; z-index: 10; font-size: 14px; letter-spacing: 2px; }
+        h2 { letter-spacing: 5px; font-size: 22px; margin-bottom: 25px; }
+        input { width: 90%; padding: 12px; margin: 10px 0; background: rgba(0,0,0,0.8); border: 1px solid #00ffff; color: #fff; border-radius: 4px; outline: none; }
+        .action-btn { background: #00ffff; color: #000; border: none; padding: 14px; cursor: pointer; width: 100%; margin-top: 15px; font-weight: bold; font-family: 'Orbitron'; }
+        #status-display { position: absolute; top: 5%; width: 100%; text-align: center; z-index: 10; font-size: 12px; letter-spacing: 4px; color: #00ffff; text-shadow: 0 0 10px #00ffff; }
     </style>
 </head>
 <body>
 
     <div id="boot-screen">
-        <div style="margin-bottom: 20px; font-size: 12px;">STARK INDUSTRIES - SECURE ACCESS</div>
-        <button id="boot-btn" onclick="startSystem()">INITIALIZE SYSTEM</button>
+        <div style="margin-bottom: 30px; font-size: 14px; letter-spacing: 5px; color: #00ffff;">VIKASH INDUSTRIES - SECURE ACCESS</div>
+        <button id="boot-btn" onclick="activateSystem()">INITIALIZE PROTOCOL</button>
     </div>
 
-    <audio id="avengersMusic" loop>
-        <source src="https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73484.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="themeSong" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"> 
+        </audio>
 
-    <div id="status-text">CORE STATUS: STANDBY</div>
+    <div id="status-display">CORE SYSTEM: STANDBY</div>
 
     <div id="login-box" class="auth-container">
         <h2>CORE LOGIN</h2>
         <input type="email" id="email" placeholder="Gmail Address">
-        <input type="password" id="pass" placeholder="Security Password">
-        <button class="action-btn" onclick="handleLogin()">ACCESS PROTOCOL</button>
-        <p style="font-size: 11px; margin-top: 10px; cursor: pointer;" onclick="toggleAuth()">New User? Create Access</p>
+        <input type="password" id="pass" placeholder="Password">
+        <button class="action-btn" onclick="handleLogin()">ACCESS SYSTEM</button>
+        <p style="font-size: 10px; margin-top: 15px; cursor: pointer;" onclick="toggleAuth()">New User? Register Access</p>
     </div>
 
     <div id="profile-box" class="auth-container">
-        <h2>USER PROFILE</h2>
+        <h2>USER DATA</h2>
+        <p style="font-size: 11px; opacity: 0.6;">Optional Profile Sync</p>
         <input type="text" id="nick" placeholder="Nickname (e.g. Boss)">
+        <input type="text" id="phone" placeholder="Phone Number">
+        <input type="date" id="dob">
         <button class="action-btn" onclick="saveProfile()">SYNC IDENTITY</button>
     </div>
 
@@ -72,13 +76,18 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // System Startup
-        window.startSystem = () => {
-            document.getElementById('boot-screen').style.display = 'none';
-            const music = document.getElementById('avengersMusic');
-            music.volume = 0.4;
-            music.play().catch(e => console.log("Music error:", e));
-            document.getElementById('status-text').innerText = "SYSTEM STATUS: ACTIVE";
+        // System Activation & Music
+        window.activateSystem = () => {
+            const music = document.getElementById('themeSong');
+            music.volume = 0.5;
+            music.play().then(() => {
+                document.getElementById('boot-screen').style.opacity = '0';
+                setTimeout(() => document.getElementById('boot-screen').style.display = 'none', 500);
+                document.getElementById('status-display').innerText = "SYSTEM STATUS: ACTIVE";
+            }).catch(e => {
+                console.log("Autoplay blocked, but system initializing...");
+                document.getElementById('boot-screen').style.display = 'none';
+            });
         };
 
         window.speak = (text) => {
@@ -90,7 +99,7 @@
         let isLoginMode = true;
         window.toggleAuth = () => {
             isLoginMode = !isLoginMode;
-            document.querySelector("#login-box h2").innerText = isLoginMode ? "CORE LOGIN" : "CREATE ACCESS";
+            document.querySelector("#login-box h2").innerText = isLoginMode ? "CORE LOGIN" : "REGISTER";
         };
 
         window.handleLogin = async () => {
@@ -99,7 +108,7 @@
             try {
                 if (isLoginMode) await signInWithEmailAndPassword(auth, email, pass);
                 else await createUserWithEmailAndPassword(auth, email, pass);
-            } catch (e) { alert(e.message); }
+            } catch (e) { alert("Access Denied: " + e.message); }
         };
 
         onAuthStateChanged(auth, async (user) => {
@@ -108,8 +117,8 @@
                 const docSnap = await getDoc(doc(db, "users", user.uid));
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    document.getElementById('status-text').innerText = `ACCESS GRANTED: ${data.nickname.toUpperCase()}`;
-                    speak(`Welcome back, ${data.nickname}. Systems online.`);
+                    document.getElementById('status-display').innerText = `USER: ${data.nickname.toUpperCase()}`;
+                    speak(`Welcome back ${data.nickname}. All systems are fully functional.`);
                 } else {
                     document.getElementById('profile-box').style.display = 'block';
                 }
@@ -121,19 +130,24 @@
         window.saveProfile = async () => {
             const user = auth.currentUser;
             const nick = document.getElementById('nick').value || "Boss";
-            await setDoc(doc(db, "users", user.uid), { nickname: nick });
+            await setDoc(doc(db, "users", user.uid), { 
+                nickname: nick,
+                phone: document.getElementById('phone').value,
+                dob: document.getElementById('dob').value
+            });
             location.reload();
         };
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
+        // 3D Visualizer (Neural Core)
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
-        const sphere = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 3), new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true }));
+        const sphere = new THREE.Mesh(new THREE.IcosahedronGeometry(1.8, 3), new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.5 }));
         scene.add(sphere);
         camera.position.z = 5;
         function animate() { requestAnimationFrame(animate); sphere.rotation.y += 0.005; renderer.render(scene, camera); }
