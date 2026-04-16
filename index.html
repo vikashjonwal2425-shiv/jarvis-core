@@ -3,51 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S. | Avengers Protocol</title>
+    <title>J.A.R.V.I.S. | Protocol</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; background: #000; overflow: hidden; font-family: 'Orbitron', sans-serif; color: #00ffff; }
         #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         
+        /* Initial Boot Button */
+        #boot-screen { position: absolute; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #boot-btn { background: transparent; color: #00ffff; border: 2px solid #00ffff; padding: 20px 40px; font-size: 20px; cursor: pointer; font-family: 'Orbitron'; box-shadow: 0 0 20px #00ffff; }
+        #boot-btn:hover { background: #00ffff; color: #000; }
+
         .auth-container {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: rgba(0, 20, 35, 0.9); padding: 40px; border: 2px solid #00ffff;
             border-radius: 15px; z-index: 100; text-align: center; width: 85%; max-width: 380px;
-            box-shadow: 0 0 50px rgba(0, 255, 255, 0.2); display: none; pointer-events: all;
+            display: none; pointer-events: all;
         }
-
-        h2 { letter-spacing: 4px; margin-bottom: 20px; font-weight: bold; }
         input { width: 90%; padding: 12px; margin: 10px 0; background: rgba(0,0,0,0.7); border: 1px solid #00ffff; color: #fff; border-radius: 5px; outline: none; }
-        button { background: transparent; color: #00ffff; border: 1px solid #00ffff; padding: 12px; cursor: pointer; width: 100%; margin-top: 15px; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #00ffff; color: #000; box-shadow: 0 0 20px #00ffff; }
-        
-        .skip-link { font-size: 11px; color: #555; cursor: pointer; display: block; margin-top: 10px; text-decoration: underline; }
-        #status-text { position: absolute; top: 5%; width: 100%; text-align: center; z-index: 10; font-size: 14px; opacity: 0.7; }
+        button.action-btn { background: transparent; color: #00ffff; border: 1px solid #00ffff; padding: 12px; cursor: pointer; width: 100%; margin-top: 15px; font-weight: bold; }
+        #status-text { position: absolute; top: 5%; width: 100%; text-align: center; z-index: 10; font-size: 14px; letter-spacing: 2px; }
     </style>
 </head>
-<body onclick="playTheme()">
+<body>
+
+    <div id="boot-screen">
+        <div style="margin-bottom: 20px; font-size: 12px;">STARK INDUSTRIES - SECURE ACCESS</div>
+        <button id="boot-btn" onclick="startSystem()">INITIALIZE SYSTEM</button>
+    </div>
 
     <audio id="avengersMusic" loop>
-        <source src="https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Avengers+Theme&filename=mt/MTI0NTE2OTM0MTI0NjAy_0G_2bjm_2fgX_2f0.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73484.mp3" type="audio/mpeg">
     </audio>
 
-    <div id="status-text">SYSTEM STATUS: READY TO INITIALIZE</div>
+    <div id="status-text">CORE STATUS: STANDBY</div>
 
     <div id="login-box" class="auth-container">
         <h2>CORE LOGIN</h2>
         <input type="email" id="email" placeholder="Gmail Address">
         <input type="password" id="pass" placeholder="Security Password">
-        <button onclick="handleLogin()">INITIALIZE PROTOCOL</button>
+        <button class="action-btn" onclick="handleLogin()">ACCESS PROTOCOL</button>
         <p style="font-size: 11px; margin-top: 10px; cursor: pointer;" onclick="toggleAuth()">New User? Create Access</p>
     </div>
 
     <div id="profile-box" class="auth-container">
         <h2>USER PROFILE</h2>
-        <input type="text" id="nick" placeholder="Nickname (Optional: e.g. Boss)">
-        <input type="text" id="phone" placeholder="Phone Number (Optional)">
-        <input type="date" id="dob">
-        <button onclick="saveProfile()">SYNC DATA</button>
-        <span class="skip-link" onclick="location.reload()">SKIP FOR NOW</span>
+        <input type="text" id="nick" placeholder="Nickname (e.g. Boss)">
+        <button class="action-btn" onclick="saveProfile()">SYNC IDENTITY</button>
     </div>
 
     <div id="canvas-container"></div>
@@ -70,16 +72,18 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Music Control
-        window.playTheme = () => {
+        // System Startup
+        window.startSystem = () => {
+            document.getElementById('boot-screen').style.display = 'none';
             const music = document.getElementById('avengersMusic');
-            music.volume = 0.3;
-            music.play();
+            music.volume = 0.4;
+            music.play().catch(e => console.log("Music error:", e));
+            document.getElementById('status-text').innerText = "SYSTEM STATUS: ACTIVE";
         };
 
-        window.speak = (text, lang = 'en-US') => {
+        window.speak = (text) => {
             const msg = new SpeechSynthesisUtterance(text);
-            msg.lang = lang; 
+            msg.lang = 'en-US';
             window.speechSynthesis.speak(msg);
         };
 
@@ -104,8 +108,8 @@
                 const docSnap = await getDoc(doc(db, "users", user.uid));
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    document.getElementById('status-text').innerText = `USER: ${data.nickname.toUpperCase()}`;
-                    speak(`Welcome back ${data.nickname}. All systems are go.`);
+                    document.getElementById('status-text').innerText = `ACCESS GRANTED: ${data.nickname.toUpperCase()}`;
+                    speak(`Welcome back, ${data.nickname}. Systems online.`);
                 } else {
                     document.getElementById('profile-box').style.display = 'block';
                 }
@@ -117,33 +121,22 @@
         window.saveProfile = async () => {
             const user = auth.currentUser;
             const nick = document.getElementById('nick').value || "Boss";
-            await setDoc(doc(db, "users", user.uid), {
-                nickname: nick,
-                phone: document.getElementById('phone').value,
-                dob: document.getElementById('dob').value
-            });
+            await setDoc(doc(db, "users", user.uid), { nickname: nick });
             location.reload();
         };
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // 3D Visualizer (Jarvis Core)
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
-        
         const sphere = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 3), new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true }));
         scene.add(sphere);
         camera.position.z = 5;
-
-        function animate() {
-            requestAnimationFrame(animate);
-            sphere.rotation.y += 0.005;
-            renderer.render(scene, camera);
-        }
+        function animate() { requestAnimationFrame(animate); sphere.rotation.y += 0.005; renderer.render(scene, camera); }
         animate();
     </script>
 </body>
