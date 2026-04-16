@@ -3,111 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S. | System Online</title>
+    <title>J.A.R.V.I.S. | Core v1</title>
     <style>
-        body { margin: 0; background: #000; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
-        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        body { margin: 0; background: #000; overflow: hidden; font-family: 'Segoe UI', sans-serif; color: #00ffff; }
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         
-        /* Futuristic UI Layout */
-        .ui-overlay {
-            position: absolute; width: 100%; height: 100%; pointer-events: none;
-            display: flex; flex-direction: column; justify-content: space-between;
-            padding: 30px; box-sizing: border-box; z-index: 10;
+        /* Onboarding Form Style */
+        #auth-form {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0, 20, 30, 0.95); padding: 30px; border: 2px solid #00ffff;
+            border-radius: 20px; z-index: 100; text-align: center; box-shadow: 0 0 30px #00ffff;
+            display: none; pointer-events: all; width: 85%; max-width: 400px;
         }
-
-        .header { 
-            color: #00ffff; letter-spacing: 5px; text-shadow: 0 0 10px #00ffff;
-            border-left: 3px solid #00ffff; padding-left: 15px;
-        }
+        input { width: 90%; padding: 12px; margin: 10px 0; background: rgba(0,0,0,0.5); border: 1px solid #00ffff; color: #fff; border-radius: 8px; outline: none; }
+        button { background: #00ffff; color: #000; border: none; padding: 12px 25px; cursor: pointer; font-weight: bold; border-radius: 8px; margin-top: 15px; width: 100%; font-size: 16px; }
+        button:hover { background: #008888; color: white; }
         
-        .footer { 
-            color: rgba(0, 255, 255, 0.5); font-size: 14px; 
-            display: flex; justify-content: space-between; align-items: flex-end;
-        }
-
-        #status-light {
-            width: 10px; height: 10px; background: #00ffff;
-            border-radius: 50%; display: inline-block;
-            box-shadow: 0 0 10px #00ffff; animation: blink 1s infinite;
-        }
-
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        #welcome-msg { position: absolute; top: 15%; width: 100%; text-align: center; font-size: 28px; text-shadow: 0 0 15px #00ffff; z-index: 10; font-weight: bold; letter-spacing: 2px; }
         
-        #clock { font-size: 24px; margin-top: 10px; }
+        .ui-status { position: absolute; bottom: 20px; left: 20px; font-size: 12px; color: rgba(0, 255, 255, 0.5); z-index: 10; }
     </style>
 </head>
 <body>
 
-    <div class="ui-overlay">
-        <div class="header">
-            <h2>J.A.R.V.I.S.</h2>
-            <div id="clock">00:00:00</div>
-        </div>
-        
-        <div class="footer">
-            <div>
-                <span id="status-light"></span> SYSTEM: <span id="status-text">CALIBRATING...</span>
-            </div>
-            <div>AUTHENTICATED USER: <b>VIKASH</b><br>ACCESS LEVEL: <b>BOSS</b></div>
-        </div>
+    <div id="welcome-msg">INITIALIZING SYSTEM...</div>
+
+    <div id="auth-form">
+        <h2 style="margin-top:0;">SECURITY CHECK</h2>
+        <p>नमस्ते बॉस, अपनी पहचान दर्ज करें:</p>
+        <input type="text" id="userName" placeholder="आपका पूरा नाम">
+        <input type="text" id="userNick" placeholder="मैं आपको क्या बुलाऊं? (उदा: Boss)">
+        <input type="text" id="userPhone" placeholder="मोबाइल नंबर">
+        <input type="date" id="userDob">
+        <button onclick="saveUserData()">GRANT ACCESS</button>
     </div>
 
+    <div class="ui-status">AUTHENTICATION REQUIRED | JARVIS CORE V1</div>
     <div id="canvas-container"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyATc8fbfL086MbvTOVynsPc4ZSHtWcRuQc",
+            authDomain: "jarvis-core-v1-ac8fd.firebaseapp.com",
+            projectId: "jarvis-core-v1-ac8fd",
+            storageBucket: "jarvis-core-v1-ac8fd.firebasestorage.app",
+            messagingSenderId: "1086976113832",
+            appId: "1:1086976113832:web:5b2ecc409df4c5035c569d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Check user on load
+        window.addEventListener('DOMContentLoaded', async () => {
+            const localUser = localStorage.getItem("jarvis_boss");
+            if (!localUser) {
+                document.getElementById('auth-form').style.display = 'block';
+                document.getElementById('welcome-msg').innerText = "WAITING FOR IDENTITY...";
+            } else {
+                const docRef = doc(db, "users", localUser);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('welcome-msg').innerText = `WELCOME BACK, ${data.nickname.toUpperCase()}!`;
+                }
+            }
+        });
+
+        // Save Data Function
+        window.saveUserData = async () => {
+            const name = document.getElementById('userName').value;
+            const nick = document.getElementById('userNick').value;
+            const phone = document.getElementById('userPhone').value;
+            const dob = document.getElementById('userDob').value;
+
+            if(name && nick) {
+                document.getElementById('welcome-msg').innerText = "SAVING IDENTITY...";
+                try {
+                    await setDoc(doc(db, "users", name), {
+                        fullName: name,
+                        nickname: nick,
+                        phone: phone,
+                        dob: dob,
+                        created: new Date().toISOString()
+                    });
+                    localStorage.setItem("jarvis_boss", name);
+                    document.getElementById('auth-form').style.display = 'none';
+                    document.getElementById('welcome-msg').innerText = `ACCESS GRANTED! HELLO ${nick.toUpperCase()}`;
+                    setTimeout(() => location.reload(), 2000);
+                } catch (e) {
+                    alert("Error: " + e.message);
+                }
+            } else {
+                alert("बॉस, कृपया नाम और निकनेम जरूर भरें!");
+            }
+        };
+    </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // --- CLOCK ---
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString();
-        }
-        setInterval(updateClock, 1000);
-
-        // --- 3D SCENE ---
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-        // --- THE FACE (Holographic Mesh) ---
-        // जार्विस का चेहरा बनाने के लिए हमने एक Icosahedron का इस्तेमाल किया है जो तकनीकी (Tech) लुक देता है
-        const faceGeometry = new THREE.IcosahedronGeometry(1.8, 3);
-        const faceMaterial = new THREE.MeshBasicMaterial({
-            color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.6
-        });
-        const face = new THREE.Mesh(faceGeometry, faceMaterial);
-        scene.add(face);
-
-        // Inner Core (चमकता हुआ हिस्सा)
-        const coreGeo = new THREE.SphereGeometry(0.7, 32, 32);
-        const coreMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.2 });
-        const core = new THREE.Mesh(coreGeo, coreMat);
+        
+        // Creating the 3D Neural Face (Core)
+        const geometry = new THREE.IcosahedronGeometry(1.8, 3);
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.6 });
+        const core = new THREE.Mesh(geometry, material);
         scene.add(core);
+
+        // Inner glowing sphere
+        const innerGeo = new THREE.SphereGeometry(0.8, 32, 32);
+        const innerMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.2 });
+        const innerCore = new THREE.Mesh(innerGeo, innerMat);
+        scene.add(innerCore);
 
         camera.position.z = 5;
 
-        // --- ANIMATION ---
         function animate() {
             requestAnimationFrame(animate);
-            face.rotation.y += 0.005; // चेहरा धीरे-धीरे घूमेगा
-            face.rotation.x += 0.002;
-            
-            // जार्विस की "साँसें" (Subtle Pulse)
-            let time = Date.now() * 0.002;
-            let pulse = 1 + Math.sin(time) * 0.05;
-            face.scale.set(pulse, pulse, pulse);
-            
+            core.rotation.y += 0.005;
+            core.rotation.x += 0.002;
+            let pulse = 1 + Math.sin(Date.now() * 0.002) * 0.05;
+            core.scale.set(pulse, pulse, pulse);
             renderer.render(scene, camera);
         }
         animate();
 
-        // Status Update
-        setTimeout(() => {
-            document.getElementById('status-text').innerText = "ONLINE";
-        }, 3000);
-
-        // Responsive Screen
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
