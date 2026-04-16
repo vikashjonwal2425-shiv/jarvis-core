@@ -9,44 +9,43 @@
         body { margin: 0; background: #000; overflow: hidden; font-family: 'Orbitron', sans-serif; color: #00ffff; }
         #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         
-        #boot-screen { position: absolute; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .brand-name { font-size: 14px; letter-spacing: 5px; margin-bottom: 20px; color: #00ffff; text-transform: uppercase; }
-        #boot-btn { background: transparent; color: #00ffff; border: 1px solid #00ffff; padding: 12px 30px; font-size: 14px; cursor: pointer; font-family: 'Orbitron'; letter-spacing: 2px; }
+        #boot-screen { position: absolute; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .brand-small { font-size: 14px; letter-spacing: 5px; margin-bottom: 20px; color: #00ffff; text-shadow: 0 0 10px #00ffff; }
+        #boot-btn { background: transparent; color: #00ffff; border: 1px solid #00ffff; padding: 12px 35px; font-size: 14px; cursor: pointer; font-family: 'Orbitron'; letter-spacing: 2px; text-transform: uppercase; }
 
         .auth-container {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0, 15, 25, 0.95); padding: 30px; border: 1px solid #00ffff;
+            background: rgba(0, 10, 20, 0.95); padding: 35px; border: 1px solid #00ffff;
             z-index: 100; text-align: center; width: 85%; max-width: 350px; display: none;
         }
-        h2 { font-size: 18px; letter-spacing: 3px; margin-bottom: 20px; color: #fff; text-transform: uppercase; }
+        h2 { font-size: 18px; letter-spacing: 3px; margin-bottom: 25px; color: #fff; }
         input { width: 90%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.05); border: none; border-bottom: 1px solid #00ffff; color: #fff; font-family: 'Orbitron'; outline: none; }
-        .action-btn { background: #00ffff; color: #000; border: none; padding: 12px; cursor: pointer; width: 100%; margin-top: 20px; font-weight: bold; font-family: 'Orbitron'; letter-spacing: 2px; text-transform: uppercase; }
+        .action-btn { background: #00ffff; color: #000; border: none; padding: 12px; cursor: pointer; width: 100%; margin-top: 20px; font-weight: bold; font-family: 'Orbitron'; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
     <div id="boot-screen">
-        <div class="brand-name">VIKASH INDUSTRIES</div>
-        <button id="boot-btn" onclick="initializeSystem()">INITIALIZE SYSTEM</button>
+        <div class="brand-small">VIKASH INDUSTRIES</div>
+        <button id="boot-btn" onclick="startSystem()">INITIALIZE SYSTEM</button>
     </div>
 
-    <audio id="avengersTheme" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+    <audio id="bgm" loop>
+        <source src="https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Avengers+Theme&filename=mt/MTI0NTE2OTM0MTI0NjAy_0G_2bjm_2fgX_2f0.mp3" type="audio/mpeg">
     </audio>
 
     <div id="login-box" class="auth-container">
-        <h2>LOGIN</h2>
+        <h2>CORE LOGIN</h2>
         <input type="email" id="email" placeholder="Email">
         <input type="password" id="pass" placeholder="Password">
-        <button class="action-btn" onclick="handleLogin()">ENTER CORE</button>
-        <p style="font-size: 10px; margin-top: 15px; cursor: pointer; color: #00ffff;" onclick="toggleAuth()">New User? Register</p>
+        <button class="action-btn" onclick="login()">LOGIN</button>
     </div>
 
     <div id="canvas-container"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyATc8fbfL086MbvTOVynsPc4ZSHtWcRuQc",
@@ -59,28 +58,21 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const theme = document.getElementById('avengersTheme');
+        const music = document.getElementById('bgm');
 
-        let isLogin = true;
-        window.toggleAuth = () => {
-            isLogin = !isLogin;
-            document.querySelector("#login-box h2").innerText = isLogin ? "LOGIN" : "REGISTER";
-        };
-
-        window.initializeSystem = () => {
-            theme.volume = 0.5;
-            theme.play().catch(e => console.log("Music blocked by browser"));
+        window.startSystem = () => {
+            music.volume = 0.5;
+            music.play();
             document.getElementById('boot-screen').style.display = 'none';
             document.getElementById('login-box').style.display = 'block';
         };
 
-        window.handleLogin = async () => {
+        window.login = async () => {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
             try {
-                if(isLogin) await signInWithEmailAndPassword(auth, email, pass);
-                else await createUserWithEmailAndPassword(auth, email, pass);
-                theme.pause();
+                await signInWithEmailAndPassword(auth, email, pass);
+                music.pause();
                 alert("Welcome Boss!");
             } catch (e) { alert("Error: " + e.message); }
         };
