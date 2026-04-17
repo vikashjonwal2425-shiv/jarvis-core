@@ -3,30 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S. | Login</title>
+    <title>J.A.R.V.I.S. | Access Control</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; opacity: 0; transition: opacity 0.5s; }
-        .login-card { text-align: center; border: 1px solid #00ffff; padding: 40px; border-radius: 20px; box-shadow: 0 0 20px rgba(0,255,255,0.1); }
-        h1 { font-family: 'Orbitron'; color: #00ffff; margin-bottom: 30px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: transparent; border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; box-sizing: border-box; }
+        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        .login-card { text-align: center; border: 1px solid #00ffff; padding: 40px; border-radius: 20px; width: 90%; max-width: 350px; background: #050505; }
+        h1 { font-family: 'Orbitron'; color: #00ffff; margin-bottom: 20px; text-shadow: 0 0 10px rgba(0,255,255,0.5); }
+        input { width: 100%; padding: 14px; margin: 10px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 10px; outline: none; box-sizing: border-box; }
         input:focus { border-color: #00ffff; }
-        button { width: 100%; padding: 12px; background: #00ffff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; margin-top: 10px; }
+        button { width: 100%; padding: 14px; background: #00ffff; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; margin-top: 15px; color: #000; }
+        .reset-btn { margin-top: 25px; background: transparent; color: #ff4444; border: 1px solid #ff4444; font-size: 10px; width: auto; padding: 5px 15px; }
     </style>
 </head>
 <body>
 
     <div class="login-card">
         <h1>J.A.R.V.I.S.</h1>
-        <p style="font-size: 12px; color: #666; margin-bottom: 20px;">ACCESSING CORE SYSTEM...</p>
+        <p id="status" style="font-size: 11px; color: #00ffff; margin-bottom: 20px;">SYSTEM READY</p>
         <input type="email" id="email" placeholder="Email Address">
         <input type="password" id="pass" placeholder="Password">
-        <button onclick="login()">LOGIN</button>
+        <button id="loginBtn">LOGIN</button>
+        
+        <button class="reset-btn" id="resetBtn">FORCE RESET / LOGOUT</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyATc8fbfL086MbvTOVynsPc4ZSHtWcRuQc",
@@ -40,29 +43,41 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // --- CHECK IF ALREADY LOGGED IN ---
+        // 1. पेज लोड होते ही चेक करो कि पहले से लॉगिन तो नहीं है?
         setPersistence(auth, browserLocalPersistence).then(() => {
             onAuthStateChanged(auth, (user) => {
                 if (user) {
-                    // अगर पहले से लॉगिन है, तो सीधा डैशबोर्ड पर भेजो
+                    document.getElementById('status').innerText = "AUTHORIZED! REDIRECTING...";
                     window.location.replace('dashboard.html');
-                } else {
-                    // अगर लॉगिन नहीं है, तभी यह पेज दिखाओ
-                    document.body.style.opacity = "1";
                 }
             });
         });
 
-        window.login = async () => {
+        // 2. लॉगिन बटन का काम (Direct Event Listener)
+        document.getElementById('loginBtn').addEventListener('click', async () => {
             const e = document.getElementById('email').value;
             const p = document.getElementById('pass').value;
+            const btn = document.getElementById('loginBtn');
+            
+            if(!e || !p) { alert("दोनों बॉक्स भरें!"); return; }
+
+            btn.innerText = "VERIFYING...";
             try {
                 await signInWithEmailAndPassword(auth, e, p);
                 window.location.replace('dashboard.html');
             } catch (err) {
-                alert("Login Failed: " + err.message);
+                btn.innerText = "LOGIN";
+                alert("गलत ईमेल या पासवर्ड!");
             }
-        };
+        });
+
+        // 3. फोर्स रिसेट (लॉगआउट) बटन
+        document.getElementById('resetBtn').addEventListener('click', async () => {
+            await signOut(auth);
+            alert("System Reset! अब आप दोबारा लॉगिन कर सकते हैं।");
+            location.reload();
+        });
+
     </script>
 </body>
 </html>
