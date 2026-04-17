@@ -3,59 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>J.A.R.V.I.S. | NEXUS</title>
+    <title>J.A.R.V.I.S. | SUPREME</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root { --glow: #00ffff; --bg: #000; }
         body { margin: 0; background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
-        .header { padding: 15px 20px; font-family: 'Orbitron'; color: var(--glow); font-size: 13px; letter-spacing: 2px; opacity: 0.8; }
-        
-        .hero { padding: 5px 20px; }
-        .hero h1 { font-size: 22px; margin: 0; font-weight: 400; }
-        .hero h2 { font-size: 18px; margin: 2px 0 0 0; color: #444; }
+        /* Popup for First-Time Identity */
+        #onboarding { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .setup-card { width: 100%; max-width: 320px; border: 1px solid var(--glow); padding: 25px; border-radius: 15px; background: #080808; text-align: center; }
+        .setup-card input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #333; color: #fff; padding: 12px 0; margin: 15px 0; outline: none; font-size: 16px; }
+        .setup-card input:focus { border-color: var(--glow); }
+        .setup-card button { background: var(--glow); border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; }
 
-        /* Slim List View - एक के नीचे एक */
-        .list-container { padding: 15px 20px; flex-grow: 1; overflow-y: auto; padding-bottom: 100px; }
-        .list-item { 
-            background: rgba(255,255,255,0.03); border-radius: 10px; padding: 12px 15px; 
-            margin-bottom: 8px; display: flex; align-items: center; gap: 15px; 
-            border: 1px solid rgba(255,255,255,0.05); font-size: 14px; 
-        }
-        .list-item:active { background: rgba(0,255,255,0.05); border-color: var(--glow); }
-        .icon-circle { width: 30px; height: 30px; background: rgba(0,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .header { padding: 15px 20px; font-family: 'Orbitron'; color: var(--glow); font-size: 12px; letter-spacing: 2px; }
+        .hero { padding: 5px 20px 15px; }
+        .hero h1 { font-size: 24px; margin: 0; font-weight: 400; }
+        .hero h2 { font-size: 18px; color: #444; margin: 2px 0 0; }
 
-        /* Bottom Fixed Search */
-        .footer { position: fixed; bottom: 0; width: 100%; padding: 15px; background: #000; box-sizing: border-box; }
-        .search-bar { background: #111; border-radius: 25px; display: flex; align-items: center; padding: 5px 15px; border: 1px solid #222; }
-        .search-bar input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px; font-size: 16px; outline: none; }
+        .main-list { padding: 0 20px; flex-grow: 1; overflow-y: auto; padding-bottom: 100px; }
+        .item { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 12px; padding: 14px 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; font-size: 14px; transition: 0.2s; }
+        .item:active { background: #111; border-color: var(--glow); transform: scale(0.98); }
+        .item span { font-size: 18px; }
+
+        .search-fixed { position: fixed; bottom: 0; width: 100%; padding: 15px; background: linear-gradient(transparent, #000 30%); box-sizing: border-box; }
+        .bar { background: #121212; border-radius: 30px; display: flex; align-items: center; padding: 5px 15px; border: 1px solid #222; }
+        .bar input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 12px; font-size: 16px; outline: none; }
         
-        .btn-svg { background: transparent; border: none; padding: 5px; cursor: pointer; display: flex; align-items: center; }
-        .btn-svg svg { width: 22px; height: 22px; fill: #666; }
-        .send-active svg { fill: var(--glow); }
+        .icn-btn { background: transparent; border: none; padding: 8px; display: flex; align-items: center; cursor: pointer; }
+        .icn-btn svg { width: 22px; height: 22px; fill: #666; }
+        .send svg { fill: var(--glow); }
     </style>
 </head>
 <body>
 
-    <div class="header">SYSTEM V4.0</div>
-
-    <div class="hero">
-        <h1 id="greet">नमस्ते, Boss!</h1>
-        <h2>कहाँ से शुरुआत करें?</h2>
+    <div id="onboarding">
+        <div class="setup-card">
+            <h3 style="font-family:'Orbitron'; color:var(--glow); margin-top:0;">INITIALIZING...</h3>
+            <p style="font-size:12px; color:#666;">Identity Verification Required</p>
+            <input type="text" id="nick" placeholder="Nickname (e.g. Boss)">
+            <input type="tel" id="ph" placeholder="Mobile Number">
+            <button onclick="saveIdentity()">GRANT ACCESS</button>
+        </div>
     </div>
 
-    <div class="list-container">
-        <div class="list-item"><div class="icon-circle">🖼️</div> इमेज जनरेट करें</div>
-        <div class="list-item"><div class="icon-circle">🎸</div> म्यूजिक कंपोज करें</div>
-        <div class="list-item"><div class="icon-circle">📰</div> ताज़ा ख़बरें पढ़ें</div>
-        <div class="list-item"><div class="icon-circle">💻</div> कोडिंग में मदद</div>
-        <div class="list-item"><div class="icon-circle">🎥</div> वीडियो क्रिएट करें</div>
-        <div class="list-item"><div class="icon-circle">🔋</div> सिस्टम डायग्नोस्टिक्स</div>
+    <div class="header">J.A.R.V.I.S. V4.0</div>
+    <div class="hero"><h1 id="greet">नमस्ते...</h1><h2>क्या हुक्म है?</h2></div>
+
+    <div class="main-list">
+        <div class="item"><span>🖼️</span> इमेज जनरेट करें</div>
+        <div class="item"><span>🎵</span> संगीत बनाएँ</div>
+        <div class="item"><span>💻</span> कोडिंग में सहायता</div>
+        <div class="item"><span>📰</span> ताज़ा ख़बरें</div>
     </div>
 
-    <div class="footer">
-        <div class="search-bar">
-            <button class="btn-svg"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
-            <input type="text" id="userInput" placeholder="Ask J.A.R.V.I.S..." autocomplete="off">
-            <button class="btn-svg"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.0
-                                                                                                                                                         
+    <div class="search-fixed">
+        <div class="bar">
+            <button class="icn-btn"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
+            <input type="text" id="cmdInput" placeholder="Ask J.A.R.V.I.S..." autocomplete="off">
+            <button class="icn-btn"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
+            <button class="icn-btn send" onclick="fire()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyATc8fbfL086MbvTOVynsPc4ZSHtWcRuQc",
+            authDomain: "jarvis-core-v1-ac8fd.firebaseapp.com",
+            projectId: "jarvis-core-v1-ac8fd",
+            storageBucket: "jarvis-core-v1-ac8fd.firebasestorage.app",
+            messagingSenderId: "1086976113832",
+            appId: "1:1086976113832:web:5b2ecc409df4c5035c569d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        setPersistence(auth, browserLocalPersistence).then(() => {
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    // ADMIN SECURITY CHECK
+                    if (user.email !== "vikashjonwal2406@gmail.com") {
+                        alert("Unauthorized User Detected!");
+                        window.location.href = 'index.html';
+                        return;
+                    }
+                    
+                    const snap = await getDoc(doc(db, "users", user.uid));
+                    if (snap.exists()) {
+                        document.getElementById('greet').innerText = `नमस्ते, ${snap.data().nickname}!`;
+                        document.getElementById('onboarding').style.display = 'none';
+                    } else {
+                        document.getElementById('onboarding').style.display = 'flex';
+                    }
+                } else {
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+
+        window.saveIdentity = async () => {
+            const n = document.getElementById('nick').value;
+            const p = document.getElementById('ph').value;
+            if(n && p) {
+                await setDoc(doc(db, "users", auth.currentUser.uid), { nickname: n, phone: p, email: auth.currentUser.email });
+                location.reload();
+            } else { alert("Please enter both details!"); }
+        };
+
+        window.fire = () => {
+            const val = document.getElementById('cmdInput').value;
+            if(val) { alert("Command Sent: " + val); document.getElementById('cmdInput').value = ""; }
+        };
+    </script>
+</body>
+</html>
