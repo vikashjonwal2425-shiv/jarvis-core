@@ -6,66 +6,68 @@
     <title>J.A.R.V.I.S. | NEXUS</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --glow: #00ffff; --bg: #000; }
-        body { margin: 0; background: var(--bg); color: var(--glow); font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; }
+        :root { --glow: #00ffff; --bg: #000; --card: rgba(255,255,255,0.08); }
+        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Rajdhani', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        #canvas-container { position: absolute; width: 100%; height: 100%; z-index: 0; }
+        /* Top Navigation */
+        .top-nav { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Orbitron'; font-size: 14px; letter-spacing: 2px; color: var(--glow); }
+        .user-profile { width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--glow); overflow: hidden; }
 
-        /* Onboarding Overlay */
-        #onboarding { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .setup-box { width: 85%; max-width: 350px; text-align: center; border: 1px solid var(--glow); padding: 25px; background: rgba(0,20,30,0.9); }
-        input { width: 90%; background: transparent; border: none; border-bottom: 1px solid var(--glow); color: #fff; padding: 10px; margin: 10px 0; outline: none; font-family: 'Rajdhani'; }
+        /* Welcome Section [As per 65928.jpg] */
+        .welcome-hero { padding: 40px 25px 20px; }
+        .welcome-hero h1 { font-size: 28px; margin: 0; font-weight: 500; color: #fff; }
+        .welcome-hero h2 { font-size: 24px; margin: 5px 0 0 0; font-weight: 700; color: rgba(255,255,255,0.7); }
 
-        /* Main UI */
-        .ui-layer { position: relative; z-index: 10; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; box-sizing: border-box; pointer-events: none; }
-        .ui-layer * { pointer-events: auto; }
+        /* Quick Action Grid [Enhanced version of 65928.jpg] */
+        .actions-grid { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; overflow-y: auto; flex-grow: 1; padding-bottom: 100px; }
+        .action-card { background: var(--card); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 18px; display: flex; align-items: center; gap: 12px; transition: 0.3s; }
+        .action-card:active { transform: scale(0.95); background: rgba(0, 255, 255, 0.1); }
+        .icon-box { font-size: 20px; }
+        .action-text { font-size: 13px; font-weight: 500; }
 
-        .top-info { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 2px; }
-        .welcome-msg { font-size: 16px; font-family: 'Orbitron'; margin-top: 10px; }
+        /* Bottom Floating Search [As per 65928.jpg] */
+        .search-area { position: fixed; bottom: 0; width: 100%; padding: 20px; background: linear-gradient(transparent, #000 40%); box-sizing: border-box; }
+        .search-bar { background: #1a1a1a; border-radius: 30px; padding: 5px 20px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
+        .search-bar input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 12px; font-size: 15px; outline: none; }
+        .search-tools { display: flex; gap: 15px; color: rgba(255,255,255,0.6); }
 
-        /* Quick Shortcuts */
-        .shortcuts { display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; }
-        .tag { font-size: 10px; border: 1px solid rgba(0,255,255,0.4); padding: 4px 10px; border-radius: 15px; cursor: pointer; }
-
-        .chat-hub { background: rgba(0,15,25,0.8); backdrop-filter: blur(10px); border: 1px solid rgba(0,255,255,0.3); border-radius: 15px; padding: 12px; margin-bottom: 10px; }
-        .input-wrap { display: flex; align-items: center; }
-        .go-btn { background: var(--glow); color: #000; border: none; padding: 8px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; }
+        /* J.A.R.V.I.S. Ambient Glow */
+        .ambient-glow { position: fixed; top: 50%; left: 50%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(0,255,255,0.05) 0%, transparent 70%); transform: translate(-50%, -50%); z-index: -1; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <div id="onboarding">
-        <div class="setup-box">
-            <h3 style="font-family:'Orbitron'; font-size:14px;">IDENTITY SETUP</h3>
-            <input type="text" id="setup-nick" placeholder="Enter Nickname">
-            <input type="tel" id="setup-phone" placeholder="Mobile Number">
-            <input type="date" id="setup-dob">
-            <button class="go-btn" style="width:100%; margin-top:15px;" onclick="saveProfile()">COMPLETE SETUP</button>
-        </div>
+    <div class="ambient-glow"></div>
+
+    <div class="top-nav">
+        <div class="logo">J.A.R.V.I.S.</div>
+        <div class="user-profile"><img src="https://via.placeholder.com/35" alt="Boss" width="100%"></div>
     </div>
 
-    <div id="canvas-container"></div>
+    <div class="welcome-hero">
+        <h1 id="user-greeting">नमस्ते, Boss!</h1>
+        <h2>कहाँ से शुरुआत करें?</h2>
+    </div>
 
-    <div class="ui-layer">
-        <div class="top-section">
-            <div class="top-info">
-                <div>VIKASH INDUSTRIES</div>
-                <div style="color:#00ff00;">CORE ONLINE</div>
-            </div>
-            <div class="welcome-msg" id="display-name">Initializing...</div>
-        </div>
+    <div class="actions-grid">
+        <div class="action-card"><div class="icon-box">🖼️</div><div class="action-text">इमेज बनाएँ</div></div>
+        <div class="action-card"><div class="icon-box">🎸</div><div class="action-text">संगीत बनाएँ</div></div>
+        <div class="action-card"><div class="icon-box">🏏</div><div class="action-text">क्रिकेट अपडेट</div></div>
+        <div class="action-card"><div class="icon-box">📝</div><div class="action-text">कुछ भी लिखें</div></div>
+        <div class="action-card"><div class="icon-box">🎥</div><div class="action-text">वीडियो जनरेट</div></div>
+        <div class="action-card"><div class="icon-box">📰</div><div class="action-text">ताज़ा ख़बरें</div></div>
+        <div class="action-card"><div class="icon-box">🛠️</div><div class="action-text">कोडिंग हेल्प</div></div>
+        <div class="action-card"><div class="icon-box">🔋</div><div class="action-text">सिस्टम स्टेटस</div></div>
+    </div>
 
-        <div class="bottom-section">
-            <div class="shortcuts">
-                <div class="tag">AI Image</div>
-                <div class="tag">Latest News</div>
-                <div class="tag">Weather</div>
-            </div>
-            <div class="chat-hub">
-                <div class="input-wrap">
-                    <input type="text" id="userIn" placeholder="Awaiting command..." style="border:none; margin:0; flex-grow:1;">
-                    <button class="go-btn">EXECUTE</button>
-                </div>
+    <div class="search-area">
+        <div class="search-bar">
+            <span style="font-size: 20px; margin-right: 10px;">+</span>
+            <input type="text" placeholder="Ask J.A.R.V.I.S...">
+            <div class="search-tools">
+                <span>🎙️</span>
+                <span style="color: var(--glow);">✨</span>
             </div>
         </div>
     </div>
@@ -73,69 +75,24 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { /* Your Config */ };
+        const firebaseConfig = { /* Your Existing Config */ };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
         onAuthStateChanged(auth, async (user) => {
-            if (!user) return window.location.href = 'index.html';
-            
-            const docRef = doc(db, "users", user.uid);
-            const docSnap = await getDoc(docRef);
-
-            if (docSnap.exists()) {
-                document.getElementById('display-name').innerText = `Hello, ${docSnap.data().nickname}`;
+            if (user) {
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    document.getElementById('user-greeting').innerText = `नमस्ते, ${docSnap.data().nickname}!`;
+                }
             } else {
-                document.getElementById('onboarding').style.display = 'flex';
+                window.location.href = 'index.html';
             }
         });
-
-        window.saveProfile = async () => {
-            const nick = document.getElementById('setup-nick').value;
-            const phone = document.getElementById('setup-phone').value;
-            const dob = document.getElementById('setup-dob').value;
-            if(!nick || !phone || !dob) return alert("Fill all details!");
-
-            await setDoc(doc(db, "users", auth.currentUser.uid), {
-                nickname: nick, phone: phone, dob: dob, email: auth.currentUser.email
-            });
-            location.reload();
-        };
-    </script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-        const group = new THREE.Group();
-        // मल्टीपल रिंग्स (Rings) बनाना
-        const createRing = (radius, speed) => {
-            const geometry = new THREE.TorusGeometry(radius, 0.02, 16, 100);
-            const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.5 });
-            const ring = new THREE.Mesh(geometry, material);
-            ring.rotation.x = Math.random() * Math.PI;
-            ring.speed = speed;
-            group.add(ring);
-            return ring;
-        };
-
-        const rings = [createRing(1.5, 0.01), createRing(1.8, 0.02), createRing(2.1, -0.015)];
-        scene.add(group);
-        camera.position.z = 5;
-
-        function animate() {
-            requestAnimationFrame(animate);
-            rings.forEach(r => { r.rotation.y += r.speed; r.rotation.x += r.speed/2; });
-            renderer.render(scene, camera);
-        }
-        animate();
     </script>
 </body>
 </html>
