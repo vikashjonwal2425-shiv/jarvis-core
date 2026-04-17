@@ -1,96 +1,5 @@
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>JARVIS Dashboard</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #0a0f1c;
-      color: #00f7ff;
-    }
+appDiv.innerHTML = "<h2>Loading...</h2>"; // 👈 ये add करो
 
-    .container {
-      display: flex;
-      height: 100vh;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-
-    .card {
-      background: rgba(0,0,0,0.7);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px #00f7ff;
-      width: 300px;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      background: #111;
-      border: 1px solid #00f7ff;
-      color: #00f7ff;
-      border-radius: 5px;
-    }
-
-    button {
-      width: 100%;
-      padding: 10px;
-      background: #00f7ff;
-      border: none;
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
-    h2 {
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-
-<div class="container" id="app"></div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getAuth,
-  setPersistence,
-  browserLocalPersistence,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-// 🔥 YOUR CONFIG HERE
-const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "jarvis-core-v1-ac8fd.firebaseapp.com",
-  projectId: "jarvis-core-v1-ac8fd",
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// ✅ Persistence Fix
-await setPersistence(auth, browserLocalPersistence);
-
-const appDiv = document.getElementById("app");
-
-// 🔁 Auth State Check
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const userRef = doc(db, "users", user.uid);
@@ -102,54 +11,9 @@ onAuthStateChanged(auth, async (user) => {
       showDashboard(snap.data());
     }
   } else {
-    appDiv.innerHTML = "<h2>Please Login First</h2>";
+    // 👇 तुरंत logout मत दिखाओ
+    setTimeout(() => {
+      appDiv.innerHTML = "<h2>Please Login First</h2>";
+    }, 1500);
   }
 });
-
-// 🧾 Profile Form
-function showProfileForm(user) {
-  appDiv.innerHTML = `
-    <div class="card">
-      <h2>Complete Profile</h2>
-      <input id="name" placeholder="Full Name" required />
-      <input id="nick" placeholder="Nickname" required />
-      <input id="mobile" placeholder="Mobile (optional)" />
-      <button onclick="saveProfile()">Save</button>
-    </div>
-  `;
-
-  window.saveProfile = async () => {
-    const name = document.getElementById("name").value;
-    const nick = document.getElementById("nick").value;
-    const mobile = document.getElementById("mobile").value;
-
-    if (!name || !nick) {
-      alert("Fill required fields");
-      return;
-    }
-
-    await setDoc(doc(db, "users", user.uid), {
-      name,
-      nick,
-      mobile
-    });
-
-    showDashboard({ name, nick });
-  };
-}
-
-// 🧠 Dashboard
-function showDashboard(data) {
-  appDiv.innerHTML = `
-    <div class="card">
-      <h2>Welcome ${data.nick}</h2>
-      <p>JARVIS AI is ready 🚀</p>
-    </div>
-  `;
-}
-
-</script>
-
-</body>
-</html>
-```
