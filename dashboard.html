@@ -1,159 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>JARVIS Dashboard</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #0a0f1c;
-      color: #00f7ff;
-    }
-
-    .container {
-      display: flex;
-      height: 100vh;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-
-    .card {
-      background: rgba(0,0,0,0.7);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px #00f7ff;
-      width: 300px;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      background: #111;
-      border: 1px solid #00f7ff;
-      color: #00f7ff;
-      border-radius: 5px;
-    }
-
-    button {
-      width: 100%;
-      padding: 10px;
-      background: #00f7ff;
-      border: none;
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
-    h2 {
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-
-<div class="container" id="app"></div>
-
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getAuth,
-  setPersistence,
-  browserLocalPersistence,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    const firebaseConfig = {
+        apiKey: "AIzaSyATc8fbfL086MbvTOVynsPc4ZSHtWcRuQc",
+        authDomain: "jarvis-core-v1-ac8fd.firebaseapp.com",
+        projectId: "jarvis-core-v1-ac8fd",
+        storageBucket: "jarvis-core-v1-ac8fd.firebasestorage.app",
+        messagingSenderId: "1086976113832",
+        appId: "1:1086976113832:web:5b2ecc409df4c5035c569d"
+    };
 
-// 🔥 YOUR CONFIG HERE
-const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "jarvis-core-v1-ac8fd.firebaseapp.com",
-  projectId: "jarvis-core-v1-ac8fd",
-};
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+    // 1. सबसे पहले ब्राउज़र को बोलो कि लॉगिन याद रखना है
+    setPersistence(auth, browserLocalPersistence).then(() => {
+        
+        // 2. अब चेक करो कि क्या पहले से लॉगिन है?
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // अगर लॉगिन मिल गया, तो चेक करो कि वो आप (विकास) ही हो ना?
+                if (user.email !== "vikashjonwal2406@gmail.com") {
+                    window.location.replace('index.html'); 
+                    return;
+                }
 
-// ✅ Persistence Fix
-await setPersistence(auth, browserLocalPersistence);
+                // डेटाबेस से नाम उठाओ
+                const snap = await getDoc(doc(db, "users", user.uid));
+                if (snap.exists()) {
+                    document.getElementById('greet').innerText = `नमस्ते, ${snap.data().nickname}!`;
+                    document.getElementById('onboarding').style.display = 'none';
+                } else {
+                    // अगर लॉगिन है पर नाम सेव नहीं किया, तो फॉर्म दिखाओ
+                    document.getElementById('onboarding').style.display = 'flex';
+                }
+                
+                // अब स्क्रीन दिखाओ (ताकि लॉगिन वाला झटका न लगे)
+                document.body.style.opacity = "1";
 
-const appDiv = document.getElementById("app");
+            } else {
+                // 3. अगर लॉगिन बिल्कुल नहीं है, सिर्फ तभी बाहर भेजो
+                window.location.replace('index.html');
+            }
+        });
 
-// ✅ FIX: पहले Loading दिखाओ
-appDiv.innerHTML = "<h2>Loading...</h2>";
-
-// 🔁 Auth State Check (FIXED)
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    const userRef = doc(db, "users", user.uid);
-    const snap = await getDoc(userRef);
-
-    if (!snap.exists()) {
-      showProfileForm(user);
-    } else {
-      showDashboard(snap.data());
-    }
-  } else {
-    // ❗ तुरंत logout मत दिखाओ
-    setTimeout(() => {
-      appDiv.innerHTML = "<h2>Please Login First</h2>";
-    }, 1500);
-  }
-});
-
-// 🧾 Profile Form (same as yours)
-function showProfileForm(user) {
-  appDiv.innerHTML = `
-    <div class="card">
-      <h2>Complete Profile</h2>
-      <input id="name" placeholder="Full Name" required />
-      <input id="nick" placeholder="Nickname" required />
-      <input id="mobile" placeholder="Mobile (optional)" />
-      <button onclick="saveProfile()">Save</button>
-    </div>
-  `;
-
-  window.saveProfile = async () => {
-    const name = document.getElementById("name").value;
-    const nick = document.getElementById("nick").value;
-    const mobile = document.getElementById("mobile").value;
-
-    if (!name || !nick) {
-      alert("Fill required fields");
-      return;
-    }
-
-    await setDoc(doc(db, "users", user.uid), {
-      name,
-      nick,
-      mobile
+    }).catch((error) => {
+        console.error("Persistence Error: ", error);
     });
 
-    showDashboard({ name, nick });
-  };
-}
-
-// 🧠 Dashboard (same)
-function showDashboard(data) {
-  appDiv.innerHTML = `
-    <div class="card">
-      <h2>Welcome ${data.nick}</h2>
-      <p>JARVIS AI is ready 🚀</p>
-    </div>
-  `;
-}
-
+    // प्रोफाइल सेव करने का फंक्शन
+    window.saveIdentity = async () => {
+        const f = document.getElementById('fullname').value;
+        const n = document.getElementById('nick').value;
+        const m = document.getElementById('mobile').value;
+        if(f && n) {
+            await setDoc(doc(db, "users", auth.currentUser.uid), {
+                fullName: f, nickname: n, phone: m || "N/A", email: auth.currentUser.email
+            });
+            location.reload();
+        } else { alert("नाम और निकनेम ज़रूरी हैं!"); }
+    };
 </script>
-
-</body>
-</html>
