@@ -3,123 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>J.A.R.V.I.S. | SUPREME</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <title>J.A.R.V.I.S. | CORE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@400&display=swap" rel="stylesheet">
     <style>
         :root { --glow: #00ffff; --bg: #000; }
-        /* White screen fix: opacity 0 हटा दिया गया है */
-        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* --- JARVIS 3D VIRTUAL FACE (ARC REACTOR) --- */
+        .core-container { height: 250px; display: flex; align-items: center; justify-content: center; position: relative; background: radial-gradient(circle, #001a1a 0%, #000 70%); }
         
-        #onboarding { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .setup-card { width: 100%; max-width: 340px; border: 1px solid var(--glow); padding: 25px; border-radius: 15px; background: #080808; box-shadow: 0 0 20px rgba(0,255,255,0.2); }
-        .setup-card input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #333; color: #fff; padding: 12px 0; margin: 10px 0; outline: none; font-size: 15px; box-sizing: border-box; }
-        .optional-hint { font-size: 11px; color: #666; margin-top: -8px; display: block; margin-bottom: 10px; }
-        .setup-card button { background: var(--glow); border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; margin-top: 15px; color: #000; }
+        .ring { position: absolute; border-radius: 50%; border: 2px solid transparent; border-top: 2px solid var(--glow); border-bottom: 2px solid var(--glow); animation: rotate 2s linear infinite; }
+        .ring-1 { width: 140px; height: 140px; border-top-width: 4px; border-right: 2px solid var(--glow); animation-duration: 3s; opacity: 0.8; }
+        .ring-2 { width: 110px; height: 110px; border-left: 2px solid var(--glow); animation-direction: reverse; animation-duration: 2s; opacity: 0.6; }
+        .ring-3 { width: 80px; height: 80px; border-top: 2px solid #fff; animation-duration: 1s; }
+        .core-dot { width: 20px; height: 20px; background: var(--glow); border-radius: 50%; box-shadow: 0 0 30px var(--glow), 0 0 60px var(--glow); animation: pulse 1.5s ease-in-out infinite; }
 
-        .header { padding: 15px 20px; font-family: 'Orbitron'; color: var(--glow); font-size: 11px; letter-spacing: 2px; }
-        .hero { padding: 5px 20px 15px; }
-        .hero h1 { font-size: 24px; margin: 0; font-weight: 400; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } }
 
-        .list { padding: 0 20px; flex-grow: 1; overflow-y: auto; padding-bottom: 100px; }
-        .list-item { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 10px; padding: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 15px; font-size: 14px; }
+        /* --- CHAT AREA --- */
+        #chat-screen { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; }
+        .msg { max-width: 80%; padding: 12px; border-radius: 12px; font-size: 14px; line-height: 1.4; animation: fadeIn 0.3s ease; }
+        .user-msg { align-self: flex-end; background: #111; color: var(--glow); border: 1px solid #222; }
+        .jarvis-msg { align-self: flex-start; background: rgba(0, 255, 255, 0.05); border-left: 3px solid var(--glow); }
 
-        .footer { position: fixed; bottom: 0; width: 100%; padding: 15px; background: #000; box-sizing: border-box; }
-        .bar { background: #121212; border-radius: 30px; display: flex; align-items: center; padding: 5px 15px; border: 1px solid #333; }
-        .bar input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 12px; font-size: 16px; outline: none; }
-        .btn-svg { background: transparent; border: none; padding: 8px; cursor: pointer; display: flex; align-items: center; }
-        .btn-svg svg { width: 22px; height: 22px; fill: #666; }
-        .send-active svg { fill: var(--glow); }
+        /* --- FOOTER & INPUT --- */
+        .footer { padding: 15px; background: #000; border-top: 1px solid #111; }
+        .bar { background: #111; border-radius: 30px; display: flex; align-items: center; padding: 5px 15px; border: 1px solid #333; }
+        .bar input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 12px; outline: none; font-size: 16px; }
+        .btn-svg svg { width: 24px; height: 24px; fill: var(--glow); cursor: pointer; }
+        
+        .actions { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; }
+        .chip { background: #080808; border: 1px solid #222; padding: 6px 15px; border-radius: 20px; font-size: 11px; color: #888; white-space: nowrap; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div id="onboarding">
-        <div class="setup-card">
-            <h3 style="font-family:'Orbitron'; color:var(--glow); margin-top:0; text-align:center;">IDENTITY SETUP</h3>
-            <input type="text" id="fullname" placeholder="Full Name (ज़रूरी)">
-            <input type="text" id="nick" placeholder="Nickname (ज़रूरी)">
-            <input type="tel" id="mobile" placeholder="Mobile Number (Optional)">
-            <span class="optional-hint">मोबाइल नंबर देना ज़रूरी नहीं है।</span>
-            <button onclick="saveIdentity()">START SYSTEM</button>
-        </div>
+    <div class="core-container">
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <div class="ring ring-3"></div>
+        <div class="core-dot"></div>
+        <div style="position: absolute; bottom: 10px; font-family: 'Orbitron'; font-size: 10px; color: var(--glow);">CORE ONLINE</div>
     </div>
 
-    <div class="header">J.A.R.V.I.S. | ONLINE</div>
-    <div class="hero"><h1 id="greet">नमस्ते...</h1></div>
-
-    <div class="list">
-        <div class="list-item"><span>🖼️</span> इमेज जनरेट करें</div>
-        <div class="list-item"><span>🎵</span> म्यूजिक बनाएँ</div>
-        <div class="list-item"><span>🤖</span> AI से सवाल पूछें</div>
+    <div id="chat-screen">
+        <div class="msg jarvis-msg">सिस्टम कैलिब्रेटेड। स्वागत है विकास जी। हम शुरू करने के लिए तैयार हैं।</div>
     </div>
 
     <div class="footer">
+        <div class="actions">
+            <div class="chip" onclick="quick('इमेज बनाओ: ')">🖼️ IMAGE</div>
+            <div class="chip" onclick="quick('गाना लिखो: ')">🎵 MUSIC</div>
+            <div class="chip" onclick="quick('News: ')">📰 NEWS</div>
+        </div>
         <div class="bar">
-            <button class="btn-svg"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
-            <input type="text" id="userInput" placeholder="Ask J.A.R.V.I.S..." autocomplete="off">
-            <button class="btn-svg"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
-            <button class="btn-svg send-active" onclick="handleSend()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+            <input type="text" id="userInput" placeholder="Listening for command..." autocomplete="off">
+            <div class="btn-svg" onclick="askJarvis()">
+                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyATc8fbfL086MbvTOVynsPc4ZSHtWcRuQc",
-            authDomain: "jarvis-core-v1-ac8fd.firebaseapp.com",
-            projectId: "jarvis-core-v1-ac8fd",
-            storageBucket: "jarvis-core-v1-ac8fd.firebasestorage.app",
-            messagingSenderId: "1086976113832",
-            appId: "1:1086976113832:web:5b2ecc409df4c5035c569d"
-        };
-
+        const firebaseConfig = { apiKey: "AIzaSyATc8fbfL086MbvTOVynsPc4ZSHtWcRuQc", authDomain: "jarvis-core-v1-ac8fd.firebaseapp.com", projectId: "jarvis-core-v1-ac8fd" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
 
-        // PERSISTENCE & LOGIN CHECK
-        setPersistence(auth, browserLocalPersistence).then(() => {
-            onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    if (user.email !== "vikashjonwal2406@gmail.com") {
-                        window.location.replace('index.html');
-                        return;
-                    }
-                    const snap = await getDoc(doc(db, "users", user.uid));
-                    if (snap.exists()) {
-                        document.getElementById('greet').innerText = `नमस्ते, ${snap.data().nickname}!`;
-                        document.getElementById('onboarding').style.display = 'none';
-                    } else {
-                        document.getElementById('onboarding').style.display = 'flex';
-                    }
-                } else {
-                    window.location.replace('index.html');
-                }
-            });
-        }).catch((err) => { console.error("Auth Error:", err); });
+        onAuthStateChanged(auth, (user) => { if(!user) window.location.replace('index.html'); });
 
-        window.saveIdentity = async () => {
-            const f = document.getElementById('fullname').value;
-            const n = document.getElementById('nick').value;
-            const m = document.getElementById('mobile').value;
-            if(f && n) {
-                await setDoc(doc(db, "users", auth.currentUser.uid), {
-                    fullName: f, nickname: n, phone: m || "N/A", email: auth.currentUser.email
+        window.askJarvis = async () => {
+            const input = document.getElementById('userInput');
+            const val = input.value.trim();
+            if(!val) return;
+
+            appendMsg(val, 'user-msg');
+            input.value = "";
+
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${firebaseConfig.apiKey}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ contents: [{ parts: [{ text: val }] }] })
                 });
-                location.reload();
-            } else { alert("पूरा नाम और निकनेम ज़रूरी हैं!"); }
+                const data = await res.json();
+                appendMsg(data.candidates[0].content.parts[0].text, 'jarvis-msg');
+            } catch (e) { appendMsg("लिंक में समस्या है, सर।", 'jarvis-msg'); }
         };
 
-        window.handleSend = () => {
-            const txt = document.getElementById('userInput').value;
-            if(txt) {
-                alert("मैसेज सेंड हुआ: " + txt);
-                document.getElementById('userInput').value = "";
-            }
-        };
+        function appendMsg(t, c) {
+            const d = document.createElement('div');
+            d.className = `msg ${c}`;
+            d.innerText = t;
+            const screen = document.getElementById('chat-screen');
+            screen.appendChild(d);
+            screen.scrollTop = screen.scrollHeight;
+        }
+
+        window.quick = (c) => { document.getElementById('userInput').value = c; document.getElementById('userInput').focus(); };
     </script>
 </body>
 </html>
