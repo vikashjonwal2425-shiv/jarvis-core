@@ -2,102 +2,60 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S. | SUPREME</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>J.A.R.V.I.S. | NEXUS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --glow: #00ffff; --bg: #000; --card-bg: #111; }
-        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        :root { --glow: #00ffff; --bg: #000; }
+        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
-        /* Top Navigation */
-        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
-        .brand { font-family: 'Orbitron'; font-size: 14px; letter-spacing: 2px; color: var(--glow); }
-
-        /* Welcome Section */
-        .hero { padding: 30px 20px 10px; }
-        .hero h1 { font-size: 26px; margin: 0; font-weight: 400; }
-        .hero h2 { font-size: 22px; margin: 5px 0 0 0; color: #888; font-weight: 600; }
-
-        /* Professional Action Grid */
-        .grid { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; overflow-y: auto; flex-grow: 1; padding-bottom: 120px; }
-        .card { background: var(--card-bg); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px; transition: 0.3s; border: 1px solid #222; }
-        .card:active { transform: scale(0.96); background: #1a1a1a; }
-        .card-icon { color: var(--glow); width: 22px; height: 22px; }
-        .card-label { font-size: 14px; font-weight: 500; }
-
-        /* Fixed Bottom Search Bar */
-        .search-container { position: fixed; bottom: 0; width: 100%; padding: 20px; background: linear-gradient(transparent, #000 30%); box-sizing: border-box; }
-        .input-box { background: #1a1a1a; border-radius: 35px; display: flex; align-items: center; padding: 6px 15px; border: 1px solid #333; }
-        .input-box input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 12px; font-size: 16px; outline: none; font-family: 'Inter'; }
+        .header { padding: 15px 20px; font-family: 'Orbitron'; color: var(--glow); font-size: 13px; letter-spacing: 2px; opacity: 0.8; }
         
-        .action-btn { background: transparent; border: none; color: #888; cursor: pointer; padding: 8px; display: flex; align-items: center; transition: 0.2s; }
-        .action-btn:hover { color: var(--glow); }
-        .send-btn { color: var(--glow); }
+        .hero { padding: 5px 20px; }
+        .hero h1 { font-size: 22px; margin: 0; font-weight: 400; }
+        .hero h2 { font-size: 18px; margin: 2px 0 0 0; color: #444; }
+
+        /* Slim List View - एक के नीचे एक */
+        .list-container { padding: 15px 20px; flex-grow: 1; overflow-y: auto; padding-bottom: 100px; }
+        .list-item { 
+            background: rgba(255,255,255,0.03); border-radius: 10px; padding: 12px 15px; 
+            margin-bottom: 8px; display: flex; align-items: center; gap: 15px; 
+            border: 1px solid rgba(255,255,255,0.05); font-size: 14px; 
+        }
+        .list-item:active { background: rgba(0,255,255,0.05); border-color: var(--glow); }
+        .icon-circle { width: 30px; height: 30px; background: rgba(0,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+
+        /* Bottom Fixed Search */
+        .footer { position: fixed; bottom: 0; width: 100%; padding: 15px; background: #000; box-sizing: border-box; }
+        .search-bar { background: #111; border-radius: 25px; display: flex; align-items: center; padding: 5px 15px; border: 1px solid #222; }
+        .search-bar input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px; font-size: 16px; outline: none; }
+        
+        .btn-svg { background: transparent; border: none; padding: 5px; cursor: pointer; display: flex; align-items: center; }
+        .btn-svg svg { width: 22px; height: 22px; fill: #666; }
+        .send-active svg { fill: var(--glow); }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="brand">J.A.R.V.I.S.</div>
-        <button class="action-btn"><i data-lucide="settings" style="width:20px;"></i></button>
-    </div>
+    <div class="header">SYSTEM V4.0</div>
 
     <div class="hero">
-        <h1 id="user-greeting">नमस्ते, Boss!</h1>
+        <h1 id="greet">नमस्ते, Boss!</h1>
         <h2>कहाँ से शुरुआत करें?</h2>
     </div>
 
-    <div class="grid">
-        <div class="card"><i data-lucide="image" class="card-icon"></i><span class="card-label">इमेज बनाएँ</span></div>
-        <div class="card"><i data-lucide="music" class="card-icon"></i><span class="card-label">संगीत बनाएँ</span></div>
-        <div class="card"><i data-lucide="newspaper" class="card-icon"></i><span class="card-label">ताज़ा ख़बरें</span></div>
-        <div class="card"><i data-lucide="code" class="card-icon"></i><span class="card-label">कोडिंग मदद</span></div>
-        <div class="card"><i data-lucide="video" class="card-icon"></i><span class="card-label">वीडियो बनाएँ</span></div>
-        <div class="card"><i data-lucide="cpu" class="card-icon"></i><span class="card-label">सिस्टम स्टेटस</span></div>
+    <div class="list-container">
+        <div class="list-item"><div class="icon-circle">🖼️</div> इमेज जनरेट करें</div>
+        <div class="list-item"><div class="icon-circle">🎸</div> म्यूजिक कंपोज करें</div>
+        <div class="list-item"><div class="icon-circle">📰</div> ताज़ा ख़बरें पढ़ें</div>
+        <div class="list-item"><div class="icon-circle">💻</div> कोडिंग में मदद</div>
+        <div class="list-item"><div class="icon-circle">🎥</div> वीडियो क्रिएट करें</div>
+        <div class="list-item"><div class="icon-circle">🔋</div> सिस्टम डायग्नोस्टिक्स</div>
     </div>
 
-    <div class="search-container">
-        <div class="input-box">
-            <button class="action-btn"><i data-lucide="plus" style="width:22px;"></i></button>
-            <input type="text" id="userInput" placeholder="Ask J.A.R.V.I.S...">
-            <button class="action-btn"><i data-lucide="mic" style="width:22px;"></i></button>
-            <button class="action-btn send-btn" onclick="sendMessage()"><i data-lucide="send-horizontal" style="width:22px;"></i></button>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        // Firebase Setup
-        const firebaseConfig = { /* Your Existing Config */ };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const docSnap = await getDoc(doc(db, "users", user.uid));
-                if (docSnap.exists()) {
-                    document.getElementById('user-greeting').innerText = `नमस्ते, ${docSnap.data().nickname}!`;
-                }
-            } else {
-                window.location.href = 'index.html';
-            }
-        });
-
-        window.sendMessage = () => {
-            const msg = document.getElementById('userInput').value;
-            if(msg) {
-                alert("Boss, processing: " + msg);
-                document.getElementById('userInput').value = '';
-            }
-        };
-
-        // Icons Initialize
-        lucide.createIcons();
-    </script>
-</body>
-</html>
+    <div class="footer">
+        <div class="search-bar">
+            <button class="btn-svg"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
+            <input type="text" id="userInput" placeholder="Ask J.A.R.V.I.S..." autocomplete="off">
+            <button class="btn-svg"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.0
+                                                                                                                                                         
