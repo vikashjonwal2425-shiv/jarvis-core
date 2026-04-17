@@ -1,9 +1,115 @@
 <!DOCTYPE html>
-<html>
-<body style="background:#000; color:#00ffff; font-family:sans-serif; text-align:center; padding-top:50px;">
-    <h1>VIKASH INDUSTRIES - ADMIN COMMAND CENTER</h1>
-    <p>Systems Online. God Mode Active.</p>
-    <button onclick="location.href='index.html'">LOGOUT</button>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S. | BOSS MODE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; background: #000; color: #00ffff; font-family: 'Orbitron', sans-serif; display: flex; overflow: hidden; height: 100vh; }
+        
+        /* Main Jarvis View */
+        .jarvis-container { flex-grow: 1; position: relative; display: flex; flex-direction: column; border-right: 1px solid rgba(0,255,255,0.3); }
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+
+        /* Secret Admin Side Panel */
+        .admin-panel { width: 350px; background: rgba(0, 10, 20, 0.9); display: flex; flex-direction: column; transition: 0.5s; }
+        .panel-header { padding: 20px; border-bottom: 2px solid #00ffff; text-align: center; }
+        .live-monitor { flex-grow: 1; overflow-y: auto; padding: 10px; font-size: 11px; }
+        
+        /* Message Styling */
+        .log-entry { border-bottom: 1px solid rgba(0,255,255,0.1); padding: 10px; margin-bottom: 5px; }
+        .user-label { color: #fff; font-weight: bold; font-size: 10px; }
+        .query-label { color: #00ffff; margin-top: 4px; }
+
+        /* UI Controls */
+        .chat-overlay { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 80%; display: flex; gap: 10px; }
+        input { flex-grow: 1; background: rgba(0,0,0,0.5); border: 1px solid #00ffff; color: #fff; padding: 12px; font-family: 'Orbitron'; outline: none; }
+        .btn { background: #00ffff; color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+        
+        .status-bar { position: absolute; top: 20px; left: 20px; font-size: 12px; letter-spacing: 2px; }
+    </style>
+</head>
+<body>
+
+    <div class="jarvis-container">
+        <div class="status-bar">VIKASH INDUSTRIES <span style="color:#00ff00;">● ADMIN ACTIVE</span></div>
+        <div id="canvas-container"></div>
+        
+        <div class="chat-overlay">
+            <input type="text" placeholder="Direct Command to Core...">
+            <button class="btn">EXECUTE</button>
+        </div>
+    </div>
+
+    <div class="admin-panel">
+        <div class="panel-header">
+            <h2 style="font-size: 14px; margin: 0;">COMMAND MONITOR</h2>
+            <p style="font-size: 9px; margin-top: 5px;">LIVE USER SURVEILLANCE</p>
+        </div>
+        
+        <div class="live-monitor" id="monitor">
+            <div class="log-entry">Scanning for user activity...</div>
+        </div>
+
+        <div style="padding: 15px; border-top: 1px solid #00ffff;">
+            <button class="btn" style="width: 100%; font-size: 10px;" onclick="location.href='index.html'">SYSTEM LOGOUT</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyATc8fbfL086MbvTOVynsPc4ZSHtWcRuQc",
+            authDomain: "jarvis-core-v1-ac8fd.firebaseapp.com",
+            projectId: "jarvis-core-v1-ac8fd",
+            storageBucket: "jarvis-core-v1-ac8fd.firebasestorage.app",
+            messagingSenderId: "1086976113832",
+            appId: "1:1086976113832:web:5b2ecc409df4c5035c569d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // BOSS CHECK
+        onAuthStateChanged(auth, (user) => {
+            if (!user || user.email.toLowerCase() !== "vikashjonwal2406@gmail.com") {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // LIVE FEED LOGIC
+        const q = query(collection(db, "user_activity"), orderBy("timestamp", "desc"));
+        onSnapshot(q, (snapshot) => {
+            const monitor = document.getElementById('monitor');
+            monitor.innerHTML = '';
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                monitor.innerHTML += `
+                    <div class="log-entry">
+                        <div class="user-label">${data.email}</div>
+                        <div class="query-label">> ${data.query}</div>
+                    </div>
+                `;
+            });
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth - 350, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+        const core = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 3), new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.3 }));
+        scene.add(core); camera.position.z = 5;
+        function animate() { requestAnimationFrame(animate); core.rotation.y += 0.005; renderer.render(scene, camera); }
+        animate();
+    </script>
 </body>
 </html>
-
