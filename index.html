@@ -9,43 +9,54 @@
         body { margin: 0; background: #000; overflow: hidden; font-family: 'Orbitron', sans-serif; color: #00ffff; }
         #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         
-        #boot-screen { position: absolute; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .brand-small { font-size: 14px; letter-spacing: 5px; margin-bottom: 20px; color: #00ffff; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
-        #boot-btn { background: transparent; color: #00ffff; border: 1px solid #00ffff; padding: 12px 35px; font-size: 14px; cursor: pointer; font-family: 'Orbitron'; letter-spacing: 2px; text-transform: uppercase; }
+        #boot-screen { position: absolute; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .brand-small { font-size: 14px; letter-spacing: 5px; margin-bottom: 20px; color: #00ffff; text-transform: uppercase; }
+        #boot-btn { background: transparent; color: #00ffff; border: 1px solid #00ffff; padding: 12px 35px; font-size: 14px; cursor: pointer; font-family: 'Orbitron'; letter-spacing: 2px; }
 
+        /* Professional Interface */
         .auth-container {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0, 10, 20, 0.95); padding: 35px; border: 1px solid #00ffff;
-            z-index: 100; text-align: center; width: 85%; max-width: 350px; display: none;
+            background: rgba(0, 10, 20, 0.95); padding: 30px; border: 1px solid #00ffff;
+            z-index: 100; text-align: center; width: 85%; max-width: 380px; display: none;
         }
-        h2 { font-size: 18px; letter-spacing: 4px; color: #fff; margin-bottom: 30px; text-transform: uppercase; }
-        input { width: 90%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.05); border: none; border-bottom: 1px solid #00ffff; color: #fff; font-family: 'Orbitron'; outline: none; }
-        .action-btn { background: #00ffff; color: #000; border: none; padding: 12px; cursor: pointer; width: 100%; margin-top: 25px; font-weight: bold; font-family: 'Orbitron'; text-transform: uppercase; letter-spacing: 2px; }
+        h2 { font-size: 18px; letter-spacing: 3px; margin-bottom: 20px; color: #fff; }
+        input { width: 90%; padding: 12px; margin: 8px 0; background: rgba(255,255,255,0.05); border: none; border-bottom: 1px solid #00ffff; color: #fff; font-family: 'Orbitron'; outline: none; }
+        
+        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .action-btn { background: #00ffff; color: #000; border: none; padding: 12px; cursor: pointer; font-weight: bold; font-family: 'Orbitron'; text-transform: uppercase; }
+        .secondary-btn { background: transparent; color: #00ffff; border: 1px solid rgba(0,255,255,0.3); padding: 10px; cursor: pointer; font-size: 11px; }
+        .google-btn { background: #fff; color: #000; border: none; padding: 10px; cursor: pointer; font-weight: bold; margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 10px; }
     </style>
 </head>
 <body>
 
     <div id="boot-screen">
         <div class="brand-small">VIKASH INDUSTRIES</div>
-        <button id="boot-btn" onclick="startJarvis()">INITIALIZE SYSTEM</button>
+        <button id="boot-btn" onclick="runJarvis()">INITIALIZE SYSTEM</button>
     </div>
 
-    <audio id="avengersTheme" loop preload="auto">
+    <audio id="audioEngine" loop>
         <source src="Theme.mp3" type="audio/mpeg">
     </audio>
 
     <div id="login-box" class="auth-container">
-        <h2>CORE AUTHENTICATION</h2>
-        <input type="email" id="email" placeholder="Email">
+        <h2 id="auth-title">SIGN IN</h2>
+        <input type="email" id="email" placeholder="Email Address">
         <input type="password" id="pass" placeholder="Password">
-        <button class="action-btn" onclick="handleLogin()">ACCESS CORE</button>
+        
+        <div class="btn-group">
+            <button class="action-btn" id="main-btn" onclick="handleAuth()">Access Core</button>
+            <button class="google-btn" onclick="googleLogin()">Continue with Google</button>
+            <button class="secondary-btn" onclick="resetPassword()">Forgot Password?</button>
+            <p id="toggle-text" style="font-size: 10px; cursor: pointer;" onclick="toggleMode()">New to J.A.R.V.I.S? Create Account</p>
+        </div>
     </div>
 
     <div id="canvas-container"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendEmailVerification, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyATc8fbfL086MbvTOVynsPc4ZSHtWcRuQc",
@@ -58,42 +69,62 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const theme = document.getElementById('avengersTheme');
+        const player = document.getElementById('audioEngine');
+        let isSignUp = false;
 
-        window.startJarvis = () => {
-            theme.volume = 0.6;
-            theme.play().catch(e => console.log("Audio block active"));
+        window.runJarvis = () => {
+            player.volume = 0.6;
+            player.play();
             document.getElementById('boot-screen').style.display = 'none';
             document.getElementById('login-box').style.display = 'block';
         };
 
-        window.handleLogin = async () => {
+        window.toggleMode = () => {
+            isSignUp = !isSignUp;
+            document.getElementById('auth-title').innerText = isSignUp ? "CREATE ACCOUNT" : "SIGN IN";
+            document.getElementById('toggle-text').innerText = isSignUp ? "Already have access? Sign In" : "New to J.A.R.V.I.S? Create Account";
+        };
+
+        window.handleAuth = async () => {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
-            
-            // Your Admin Email Config
-            const adminEmail = "Vikashjonwal2406@gmail.com"; 
+            const adminEmail = "Vikashjonwal2406@gmail.com";
 
             try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, pass);
-                const user = userCredential.user;
-                
-                if (theme) theme.pause(); 
-
-                // Redirect Logic
-                if (user.email.toLowerCase() === adminEmail.toLowerCase()) {
-                    alert("Welcome back, Boss. Accessing Command Center...");
-                    window.location.href = 'admin.html';
+                if (isSignUp) {
+                    const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+                    await sendEmailVerification(userCred.user);
+                    alert("Verification email sent! Please check your inbox to activate your account.");
                 } else {
-                    alert("Access Granted. Loading Dashboard...");
-                    window.location.href = 'dashboard.html';
+                    const userCred = await signInWithEmailAndPassword(auth, email, pass);
+                    if (!userCred.user.emailVerified && userCred.user.email !== adminEmail) {
+                        alert("Please verify your email first.");
+                        return;
+                    }
+                    if (player) player.pause();
+                    window.location.href = (email.toLowerCase() === adminEmail.toLowerCase()) ? 'admin.html' : 'dashboard.html';
                 }
-            } catch (e) { 
-                alert("Access Denied: " + e.message); 
-            }
+            } catch (e) { alert("Error: " + e.message); }
+        };
+
+        window.googleLogin = async () => {
+            try {
+                const provider = new GoogleAuthProvider();
+                await signInWithPopup(auth, provider);
+                if (player) player.pause();
+                window.location.href = 'dashboard.html';
+            } catch (e) { alert(e.message); }
+        };
+
+        window.resetPassword = async () => {
+            const email = document.getElementById('email').value;
+            if (!email) return alert("Enter your email first.");
+            try {
+                await sendPasswordResetEmail(auth, email);
+                alert("Password reset link sent to your email.");
+            } catch (e) { alert(e.message); }
         };
     </script>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         const scene = new THREE.Scene();
@@ -101,7 +132,7 @@
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
-        const core = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 3), new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.2 }));
+        const core = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 3), new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.15 }));
         scene.add(core); camera.position.z = 5;
         function animate() { requestAnimationFrame(animate); core.rotation.y += 0.005; renderer.render(scene, camera); }
         animate();
