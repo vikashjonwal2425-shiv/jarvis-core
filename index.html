@@ -3,139 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S. | VIKASH INDUSTRIES</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <title>J.A.R.V.I.S. | Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; background: #000; overflow: hidden; font-family: 'Orbitron', sans-serif; color: #00ffff; }
-        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        #boot-screen { position: absolute; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .brand-small { font-size: 14px; letter-spacing: 5px; margin-bottom: 20px; color: #00ffff; text-transform: uppercase; }
-        #boot-btn { background: transparent; color: #00ffff; border: 1px solid #00ffff; padding: 12px 35px; font-size: 14px; cursor: pointer; font-family: 'Orbitron'; letter-spacing: 2px; }
-        .auth-container {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0, 10, 20, 0.95); padding: 30px; border: 1px solid #00ffff;
-            z-index: 100; text-align: center; width: 85%; max-width: 380px; display: none;
-        }
-        .input-group { position: relative; width: 100%; }
-        input { width: 90%; padding: 12px; margin: 8px 0; background: rgba(255,255,255,0.05); border: none; border-bottom: 1px solid #00ffff; color: #fff; font-family: 'Orbitron'; outline: none; }
-        .toggle-password { position: absolute; right: 25px; top: 20px; cursor: pointer; font-size: 10px; color: #00ffff; }
-        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        .action-btn { background: #00ffff; color: #000; border: none; padding: 12px; cursor: pointer; font-weight: bold; font-family: 'Orbitron'; text-transform: uppercase; }
-        .google-btn { background: #fff; color: #000; border: none; padding: 10px; cursor: pointer; font-weight: bold; margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 10px; font-family: 'Orbitron'; font-size: 12px; }
+        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; opacity: 0; transition: opacity 0.5s; }
+        .login-card { text-align: center; border: 1px solid #00ffff; padding: 40px; border-radius: 20px; box-shadow: 0 0 20px rgba(0,255,255,0.1); }
+        h1 { font-family: 'Orbitron'; color: #00ffff; margin-bottom: 30px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: transparent; border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; box-sizing: border-box; }
+        input:focus { border-color: #00ffff; }
+        button { width: 100%; padding: 12px; background: #00ffff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div id="boot-screen">
-    <div class="brand-small">VIKASH INDUSTRIES</div>
-    <button id="boot-btn" onclick="runJarvis()">INITIALIZE SYSTEM</button>
-</div>
-
-<audio id="audioEngine" loop>
-    <source src="Theme.mp3" type="audio/mpeg">
-</audio>
-
-<div id="login-box" class="auth-container">
-    <h2 id="auth-title">SIGN IN</h2>
-    <input type="email" id="email" placeholder="Email Address">
-    <div class="input-group">
+    <div class="login-card">
+        <h1>J.A.R.V.I.S.</h1>
+        <p style="font-size: 12px; color: #666; margin-bottom: 20px;">ACCESSING CORE SYSTEM...</p>
+        <input type="email" id="email" placeholder="Email Address">
         <input type="password" id="pass" placeholder="Password">
-        <span class="toggle-password" onclick="togglePass()">SHOW</span>
+        <button onclick="login()">LOGIN</button>
     </div>
-    <div class="btn-group">
-        <button class="action-btn" onclick="handleAuth()">Access Core</button>
-        <button class="google-btn" onclick="googleLogin()">Continue with Google</button>
-        <p id="toggle-text" style="font-size: 10px; cursor: pointer;" onclick="toggleMode()">New to J.A.R.V.I.S? Create Account</p>
-    </div>
-</div>
 
-<div id="canvas-container"></div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
-  getAuth, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  GoogleAuthProvider, 
-  signInWithPopup, 
-  sendEmailVerification,
-  onAuthStateChanged,
-  setPersistence,
-  browserLocalPersistence
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyATc8fbfL086MbvTOVynsPc4ZSHtWcRuQc",
+            authDomain: "jarvis-core-v1-ac8fd.firebaseapp.com",
+            projectId: "jarvis-core-v1-ac8fd",
+            storageBucket: "jarvis-core-v1-ac8fd.firebasestorage.app",
+            messagingSenderId: "1086976113832",
+            appId: "1:1086976113832:web:5b2ecc409df4c5035c569d"
+        };
 
-const firebaseConfig = {
-    apiKey: "AIzaSyATc8fbfL086MbvTOVynsPc4ZSHtWcRuQc",
-    authDomain: "jarvis-core-v1-ac8fd.firebaseapp.com",
-    projectId: "jarvis-core-v1-ac8fd",
-    storageBucket: "jarvis-core-v1-ac8fd.firebasestorage.app",
-    messagingSenderId: "1086976113832",
-    appId: "1:1086976113832:web:5b2ecc409df4c5035c569d"
-};
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+        // --- CHECK IF ALREADY LOGGED IN ---
+        setPersistence(auth, browserLocalPersistence).then(() => {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    // अगर पहले से लॉगिन है, तो सीधा डैशबोर्ड पर भेजो
+                    window.location.replace('dashboard.html');
+                } else {
+                    // अगर लॉगिन नहीं है, तभी यह पेज दिखाओ
+                    document.body.style.opacity = "1";
+                }
+            });
+        });
 
-// ✅ LOGIN PERSISTENCE FIX
-await setPersistence(auth, browserLocalPersistence);
-
-// ✅ AUTO REDIRECT IF ALREADY LOGIN
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    window.location.href = "dashboard.html";
-  }
-});
-
-const player = document.getElementById('audioEngine');
-let isSignUp = false;
-
-window.runJarvis = () => {
-    if (player) { player.volume = 0.6; player.play(); }
-    document.getElementById('boot-screen').style.display = 'none';
-    document.getElementById('login-box').style.display = 'block';
-};
-
-window.togglePass = () => {
-    const p = document.getElementById('pass');
-    const t = document.querySelector('.toggle-password');
-    if (p.type === "password") { p.type = "text"; t.innerText = "HIDE"; }
-    else { p.type = "password"; t.innerText = "SHOW"; }
-};
-
-window.toggleMode = () => {
-    isSignUp = !isSignUp;
-    document.getElementById('auth-title').innerText = isSignUp ? "CREATE ACCOUNT" : "SIGN IN";
-    document.getElementById('toggle-text').innerText = isSignUp ? "Already have access? Sign In" : "New Account? Create";
-};
-
-window.handleAuth = async () => {
-    const email = document.getElementById('email').value.trim();
-    const pass = document.getElementById('pass').value;
-    const adminEmail = "Vikashjonwal2406@gmail.com";
-
-    try {
-        if (isSignUp) {
-            const res = await createUserWithEmailAndPassword(auth, email, pass);
-            await sendEmailVerification(res.user);
-            alert("Verification link sent!");
-        } else {
-            await signInWithEmailAndPassword(auth, email, pass);
-            if (player) player.pause();
-            window.location.href = (email.toLowerCase() === adminEmail.toLowerCase()) ? 'admin.html' : 'dashboard.html';
-        }
-    } catch (e) { alert("Error: " + e.message); }
-};
-
-window.googleLogin = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-        await signInWithPopup(auth, provider);
-        if (player) player.pause();
-        window.location.href = 'dashboard.html';
-    } catch (e) { alert(e.message); }
-};
-</script>
-
+        window.login = async () => {
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('pass').value;
+            try {
+                await signInWithEmailAndPassword(auth, e, p);
+                window.location.replace('dashboard.html');
+            } catch (err) {
+                alert("Login Failed: " + err.message);
+            }
+        };
+    </script>
 </body>
 </html>
