@@ -3,72 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S. | NEXUS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <title>J.A.R.V.I.S. | SUPREME</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root { --glow: #00ffff; --bg: #000; --card: rgba(255,255,255,0.08); }
-        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Rajdhani', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        :root { --glow: #00ffff; --bg: #000; --card-bg: #111; }
+        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
         /* Top Navigation */
-        .top-nav { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-family: 'Orbitron'; font-size: 14px; letter-spacing: 2px; color: var(--glow); }
-        .user-profile { width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--glow); overflow: hidden; }
+        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+        .brand { font-family: 'Orbitron'; font-size: 14px; letter-spacing: 2px; color: var(--glow); }
 
-        /* Welcome Section [As per 65928.jpg] */
-        .welcome-hero { padding: 40px 25px 20px; }
-        .welcome-hero h1 { font-size: 28px; margin: 0; font-weight: 500; color: #fff; }
-        .welcome-hero h2 { font-size: 24px; margin: 5px 0 0 0; font-weight: 700; color: rgba(255,255,255,0.7); }
+        /* Welcome Section */
+        .hero { padding: 30px 20px 10px; }
+        .hero h1 { font-size: 26px; margin: 0; font-weight: 400; }
+        .hero h2 { font-size: 22px; margin: 5px 0 0 0; color: #888; font-weight: 600; }
 
-        /* Quick Action Grid [Enhanced version of 65928.jpg] */
-        .actions-grid { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; overflow-y: auto; flex-grow: 1; padding-bottom: 100px; }
-        .action-card { background: var(--card); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 18px; display: flex; align-items: center; gap: 12px; transition: 0.3s; }
-        .action-card:active { transform: scale(0.95); background: rgba(0, 255, 255, 0.1); }
-        .icon-box { font-size: 20px; }
-        .action-text { font-size: 13px; font-weight: 500; }
+        /* Professional Action Grid */
+        .grid { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; overflow-y: auto; flex-grow: 1; padding-bottom: 120px; }
+        .card { background: var(--card-bg); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px; transition: 0.3s; border: 1px solid #222; }
+        .card:active { transform: scale(0.96); background: #1a1a1a; }
+        .card-icon { color: var(--glow); width: 22px; height: 22px; }
+        .card-label { font-size: 14px; font-weight: 500; }
 
-        /* Bottom Floating Search [As per 65928.jpg] */
-        .search-area { position: fixed; bottom: 0; width: 100%; padding: 20px; background: linear-gradient(transparent, #000 40%); box-sizing: border-box; }
-        .search-bar { background: #1a1a1a; border-radius: 30px; padding: 5px 20px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
-        .search-bar input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 12px; font-size: 15px; outline: none; }
-        .search-tools { display: flex; gap: 15px; color: rgba(255,255,255,0.6); }
-
-        /* J.A.R.V.I.S. Ambient Glow */
-        .ambient-glow { position: fixed; top: 50%; left: 50%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(0,255,255,0.05) 0%, transparent 70%); transform: translate(-50%, -50%); z-index: -1; pointer-events: none; }
+        /* Fixed Bottom Search Bar */
+        .search-container { position: fixed; bottom: 0; width: 100%; padding: 20px; background: linear-gradient(transparent, #000 30%); box-sizing: border-box; }
+        .input-box { background: #1a1a1a; border-radius: 35px; display: flex; align-items: center; padding: 6px 15px; border: 1px solid #333; }
+        .input-box input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 12px; font-size: 16px; outline: none; font-family: 'Inter'; }
+        
+        .action-btn { background: transparent; border: none; color: #888; cursor: pointer; padding: 8px; display: flex; align-items: center; transition: 0.2s; }
+        .action-btn:hover { color: var(--glow); }
+        .send-btn { color: var(--glow); }
     </style>
 </head>
 <body>
 
-    <div class="ambient-glow"></div>
-
-    <div class="top-nav">
-        <div class="logo">J.A.R.V.I.S.</div>
-        <div class="user-profile"><img src="https://via.placeholder.com/35" alt="Boss" width="100%"></div>
+    <div class="header">
+        <div class="brand">J.A.R.V.I.S.</div>
+        <button class="action-btn"><i data-lucide="settings" style="width:20px;"></i></button>
     </div>
 
-    <div class="welcome-hero">
+    <div class="hero">
         <h1 id="user-greeting">नमस्ते, Boss!</h1>
         <h2>कहाँ से शुरुआत करें?</h2>
     </div>
 
-    <div class="actions-grid">
-        <div class="action-card"><div class="icon-box">🖼️</div><div class="action-text">इमेज बनाएँ</div></div>
-        <div class="action-card"><div class="icon-box">🎸</div><div class="action-text">संगीत बनाएँ</div></div>
-        <div class="action-card"><div class="icon-box">🏏</div><div class="action-text">क्रिकेट अपडेट</div></div>
-        <div class="action-card"><div class="icon-box">📝</div><div class="action-text">कुछ भी लिखें</div></div>
-        <div class="action-card"><div class="icon-box">🎥</div><div class="action-text">वीडियो जनरेट</div></div>
-        <div class="action-card"><div class="icon-box">📰</div><div class="action-text">ताज़ा ख़बरें</div></div>
-        <div class="action-card"><div class="icon-box">🛠️</div><div class="action-text">कोडिंग हेल्प</div></div>
-        <div class="action-card"><div class="icon-box">🔋</div><div class="action-text">सिस्टम स्टेटस</div></div>
+    <div class="grid">
+        <div class="card"><i data-lucide="image" class="card-icon"></i><span class="card-label">इमेज बनाएँ</span></div>
+        <div class="card"><i data-lucide="music" class="card-icon"></i><span class="card-label">संगीत बनाएँ</span></div>
+        <div class="card"><i data-lucide="newspaper" class="card-icon"></i><span class="card-label">ताज़ा ख़बरें</span></div>
+        <div class="card"><i data-lucide="code" class="card-icon"></i><span class="card-label">कोडिंग मदद</span></div>
+        <div class="card"><i data-lucide="video" class="card-icon"></i><span class="card-label">वीडियो बनाएँ</span></div>
+        <div class="card"><i data-lucide="cpu" class="card-icon"></i><span class="card-label">सिस्टम स्टेटस</span></div>
     </div>
 
-    <div class="search-area">
-        <div class="search-bar">
-            <span style="font-size: 20px; margin-right: 10px;">+</span>
-            <input type="text" placeholder="Ask J.A.R.V.I.S...">
-            <div class="search-tools">
-                <span>🎙️</span>
-                <span style="color: var(--glow);">✨</span>
-            </div>
+    <div class="search-container">
+        <div class="input-box">
+            <button class="action-btn"><i data-lucide="plus" style="width:22px;"></i></button>
+            <input type="text" id="userInput" placeholder="Ask J.A.R.V.I.S...">
+            <button class="action-btn"><i data-lucide="mic" style="width:22px;"></i></button>
+            <button class="action-btn send-btn" onclick="sendMessage()"><i data-lucide="send-horizontal" style="width:22px;"></i></button>
         </div>
     </div>
 
@@ -77,6 +71,7 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // Firebase Setup
         const firebaseConfig = { /* Your Existing Config */ };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -84,8 +79,7 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                const docRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(docRef);
+                const docSnap = await getDoc(doc(db, "users", user.uid));
                 if (docSnap.exists()) {
                     document.getElementById('user-greeting').innerText = `नमस्ते, ${docSnap.data().nickname}!`;
                 }
@@ -93,6 +87,17 @@
                 window.location.href = 'index.html';
             }
         });
+
+        window.sendMessage = () => {
+            const msg = document.getElementById('userInput').value;
+            if(msg) {
+                alert("Boss, processing: " + msg);
+                document.getElementById('userInput').value = '';
+            }
+        };
+
+        // Icons Initialize
+        lucide.createIcons();
     </script>
 </body>
 </html>
