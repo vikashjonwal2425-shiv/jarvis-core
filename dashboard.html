@@ -1,132 +1,155 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>J.A.R.V.I.S. | SUPREME</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root { --glow: #00ffff; --bg: #000; }
-        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; opacity: 0; transition: opacity 0.5s; }
-        .auth-ready { opacity: 1; } /* कोड तैयार होने पर ही स्क्रीन दिखेगी */
+  <meta charset="UTF-8">
+  <title>JARVIS Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0a0f1c;
+      color: #00f7ff;
+    }
 
-        /* Setup Popup */
-        #onboarding { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .setup-card { width: 100%; max-width: 340px; border: 1px solid var(--glow); padding: 25px; border-radius: 15px; background: #080808; box-shadow: 0 0 20px rgba(0,255,255,0.2); }
-        .setup-card h3 { font-family: 'Orbitron'; color: var(--glow); margin-top: 0; text-align: center; }
-        .setup-card input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #333; color: #fff; padding: 12px 0; margin: 10px 0; outline: none; font-size: 15px; box-sizing: border-box; }
-        .optional-hint { font-size: 11px; color: #666; margin-top: -8px; display: block; margin-bottom: 10px; }
-        .setup-card button { background: var(--glow); border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; margin-top: 15px; color: #000; }
+    .container {
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
 
-        .header { padding: 15px 20px; font-family: 'Orbitron'; color: var(--glow); font-size: 11px; letter-spacing: 2px; }
-        .hero { padding: 5px 20px 15px; }
-        .hero h1 { font-size: 24px; margin: 0; font-weight: 400; }
+    .card {
+      background: rgba(0,0,0,0.7);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #00f7ff;
+      width: 300px;
+    }
 
-        /* Slim UI List */
-        .list { padding: 0 20px; flex-grow: 1; overflow-y: auto; padding-bottom: 100px; }
-        .list-item { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 10px; padding: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 15px; font-size: 14px; }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      background: #111;
+      border: 1px solid #00f7ff;
+      color: #00f7ff;
+      border-radius: 5px;
+    }
 
-        /* Input Bar Fix */
-        .footer { position: fixed; bottom: 0; width: 100%; padding: 15px; background: #000; box-sizing: border-box; }
-        .bar { background: #121212; border-radius: 30px; display: flex; align-items: center; padding: 5px 15px; border: 1px solid #333; }
-        .bar input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 12px; font-size: 16px; outline: none; }
-        .btn-svg { background: transparent; border: none; padding: 8px; cursor: pointer; display: flex; align-items: center; }
-        .btn-svg svg { width: 22px; height: 22px; fill: #666; }
-        .send-active svg { fill: var(--glow); }
-    </style>
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #00f7ff;
+      border: none;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    h2 {
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
-    <div id="onboarding">
-        <div class="setup-card">
-            <h3>IDENTITY SETUP</h3>
-            <input type="text" id="fullname" placeholder="Full Name (ज़रूरी)">
-            <input type="text" id="nick" placeholder="Nickname (ज़रूरी)">
-            <input type="tel" id="mobile" placeholder="Mobile Number (Optional)">
-            <span class="optional-hint">मोबाइल नंबर देना ज़रूरी नहीं है।</span>
-            <button onclick="saveIdentity()">START SYSTEM</button>
-        </div>
+<div class="container" id="app"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth,
+  setPersistence,
+  browserLocalPersistence,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// 🔥 YOUR CONFIG HERE
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "jarvis-core-v1-ac8fd.firebaseapp.com",
+  projectId: "jarvis-core-v1-ac8fd",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ✅ Persistence Fix
+await setPersistence(auth, browserLocalPersistence);
+
+const appDiv = document.getElementById("app");
+
+// 🔁 Auth State Check
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
+
+    if (!snap.exists()) {
+      showProfileForm(user);
+    } else {
+      showDashboard(snap.data());
+    }
+  } else {
+    appDiv.innerHTML = "<h2>Please Login First</h2>";
+  }
+});
+
+// 🧾 Profile Form
+function showProfileForm(user) {
+  appDiv.innerHTML = `
+    <div class="card">
+      <h2>Complete Profile</h2>
+      <input id="name" placeholder="Full Name" required />
+      <input id="nick" placeholder="Nickname" required />
+      <input id="mobile" placeholder="Mobile (optional)" />
+      <button onclick="saveProfile()">Save</button>
     </div>
+  `;
 
-    <div class="header">J.A.R.V.I.S. | ONLINE</div>
-    <div class="hero"><h1 id="greet">नमस्ते...</h1></div>
+  window.saveProfile = async () => {
+    const name = document.getElementById("name").value;
+    const nick = document.getElementById("nick").value;
+    const mobile = document.getElementById("mobile").value;
 
-    <div class="list">
-        <div class="list-item"><span>🖼️</span> इमेज जनरेट करें</div>
-        <div class="list-item"><span>🎵</span> म्यूजिक बनाएँ</div>
-        <div class="list-item"><span>🤖</span> AI से सवाल पूछें</div>
+    if (!name || !nick) {
+      alert("Fill required fields");
+      return;
+    }
+
+    await setDoc(doc(db, "users", user.uid), {
+      name,
+      nick,
+      mobile
+    });
+
+    showDashboard({ name, nick });
+  };
+}
+
+// 🧠 Dashboard
+function showDashboard(data) {
+  appDiv.innerHTML = `
+    <div class="card">
+      <h2>Welcome ${data.nick}</h2>
+      <p>JARVIS AI is ready 🚀</p>
     </div>
+  `;
+}
 
-    <div class="footer">
-        <div class="bar">
-            <button class="btn-svg"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
-            <input type="text" id="userInput" placeholder="Ask J.A.R.V.I.S..." autocomplete="off">
-            <button class="btn-svg"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
-            <button class="btn-svg send-active" onclick="handleSend()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
-        </div>
-    </div>
+</script>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyATc8fbfL086MbvTOVynsPc4ZSHtWcRuQc",
-            authDomain: "jarvis-core-v1-ac8fd.firebaseapp.com",
-            projectId: "jarvis-core-v1-ac8fd",
-            storageBucket: "jarvis-core-v1-ac8fd.firebasestorage.app",
-            messagingSenderId: "1086976113832",
-            appId: "1:1086976113832:web:5b2ecc409df4c5035c569d"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // LOGIN FIX: पहले परसिस्टेंस सेट होगा, फिर चेक होगा
-        async function runSecurity() {
-            await setPersistence(auth, browserLocalPersistence);
-            onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    if (user.email !== "vikashjonwal2406@gmail.com") {
-                        window.location.replace('index.html');
-                        return;
-                    }
-                    const snap = await getDoc(doc(db, "users", user.uid));
-                    if (snap.exists()) {
-                        document.getElementById('greet').innerText = `नमस्ते, ${snap.data().nickname}!`;
-                        document.getElementById('onboarding').style.display = 'none';
-                    } else {
-                        document.getElementById('onboarding').style.display = 'flex';
-                    }
-                    document.body.classList.add('auth-ready');
-                } else {
-                    window.location.replace('index.html');
-                }
-            });
-        }
-        runSecurity();
-
-        window.saveIdentity = async () => {
-            const f = document.getElementById('fullname').value;
-            const n = document.getElementById('nick').value;
-            const m = document.getElementById('mobile').value;
-            if(f && n) {
-                await setDoc(doc(db, "users", auth.currentUser.uid), {
-                    fullName: f, nickname: n, phone: m || "N/A", email: auth.currentUser.email
-                });
-                location.reload();
-            } else { alert("पूरा नाम और निकनेम ज़रूरी हैं!"); }
-        };
-
-        window.handleSend = () => {
-            const txt = document.getElementById('userInput').value;
-            if(txt) {
-                alert("मैसेज सेंड हुआ: " + txt);
-                document.getElementById('userInput').value = "";
-            }
-        };
-    </script>
 </body>
 </html>
+```
