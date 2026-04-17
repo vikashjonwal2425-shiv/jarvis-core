@@ -3,117 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S. | SUPREME</title>
+    <title>J.A.R.V.I.S. | NEXUS</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --glow: #00ffff; --bg: #000810; }
-        body { margin: 0; background: var(--bg); color: var(--glow); font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; }
+        :root { --glow: #00ffff; --bg: #000; --card: rgba(255,255,255,0.08); }
+        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Rajdhani', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Premium Background Animation */
-        #canvas-container { position: absolute; width: 100%; height: 100%; z-index: 0; filter: blur(1px); }
+        /* Top Navigation */
+        .top-nav { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Orbitron'; font-size: 14px; letter-spacing: 2px; color: var(--glow); }
+        .user-profile { width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--glow); overflow: hidden; }
 
-        /* Main Jarvis Hub */
-        .main-ui { position: relative; z-index: 10; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 30px 20px; box-sizing: border-box; }
-        
-        .header { width: 100%; display: flex; justify-content: space-between; align-items: flex-start; }
-        .brand { font-family: 'Orbitron'; font-size: 14px; letter-spacing: 4px; border-left: 3px solid var(--glow); padding-left: 10px; }
-        
-        /* The Central Core Visualizer */
-        .core-wrap { position: relative; width: 280px; height: 280px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 0 50px rgba(0,255,255,0.1); }
-        
-        /* Floating Chat Box */
-        .chat-container { width: 100%; max-width: 500px; background: rgba(0,20,30,0.6); backdrop-filter: blur(15px); border: 1px solid rgba(0,255,255,0.2); border-radius: 20px; padding: 15px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        input { background: transparent; border: none; color: #fff; font-size: 16px; padding: 10px; font-family: 'Rajdhani'; outline: none; width: 100%; }
-        
-        /* SECRET ADMIN TRIGGER (बिल्कुल नीचे कोने में छोटा सा बटन) */
-        .admin-trigger { position: fixed; bottom: 10px; right: 10px; width: 30px; height: 30px; opacity: 0.2; cursor: pointer; z-index: 1000; }
+        /* Welcome Section [As per 65928.jpg] */
+        .welcome-hero { padding: 40px 25px 20px; }
+        .welcome-hero h1 { font-size: 28px; margin: 0; font-weight: 500; color: #fff; }
+        .welcome-hero h2 { font-size: 24px; margin: 5px 0 0 0; font-weight: 700; color: rgba(255,255,255,0.7); }
 
-        /* Full Screen Command Monitor Overlay */
-        #admin-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,5,10,0.98); z-index: 2000; display: none; padding: 40px 20px; box-sizing: border-box; }
-        .log-box { height: 70vh; overflow-y: auto; border: 1px solid var(--glow); padding: 10px; background: rgba(0,255,255,0.02); }
-        .close-btn { position: absolute; top: 20px; right: 20px; font-family: 'Orbitron'; color: var(--glow); border: 1px solid var(--glow); padding: 5px 15px; cursor: pointer; }
+        /* Quick Action Grid [Enhanced version of 65928.jpg] */
+        .actions-grid { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; overflow-y: auto; flex-grow: 1; padding-bottom: 100px; }
+        .action-card { background: var(--card); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 18px; display: flex; align-items: center; gap: 12px; transition: 0.3s; }
+        .action-card:active { transform: scale(0.95); background: rgba(0, 255, 255, 0.1); }
+        .icon-box { font-size: 20px; }
+        .action-text { font-size: 13px; font-weight: 500; }
+
+        /* Bottom Floating Search [As per 65928.jpg] */
+        .search-area { position: fixed; bottom: 0; width: 100%; padding: 20px; background: linear-gradient(transparent, #000 40%); box-sizing: border-box; }
+        .search-bar { background: #1a1a1a; border-radius: 30px; padding: 5px 20px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
+        .search-bar input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 12px; font-size: 15px; outline: none; }
+        .search-tools { display: flex; gap: 15px; color: rgba(255,255,255,0.6); }
+
+        /* J.A.R.V.I.S. Ambient Glow */
+        .ambient-glow { position: fixed; top: 50%; left: 50%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(0,255,255,0.05) 0%, transparent 70%); transform: translate(-50%, -50%); z-index: -1; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <div id="canvas-container"></div>
+    <div class="ambient-glow"></div>
 
-    <div class="main-ui">
-        <div class="header">
-            <div class="brand">VIKASH<br><span style="font-size: 10px; letter-spacing: 2px;">INDUSTRIES</span></div>
-            <div style="font-size: 10px; text-align: right;">SYSTEM v4.0<br><span style="color:#00ff00;">STABLE</span></div>
-        </div>
+    <div class="top-nav">
+        <div class="logo">J.A.R.V.I.S.</div>
+        <div class="user-profile"><img src="https://via.placeholder.com/35" alt="Boss" width="100%"></div>
+    </div>
 
-        <div class="core-wrap">
-            </div>
+    <div class="welcome-hero">
+        <h1 id="user-greeting">नमस्ते, Boss!</h1>
+        <h2>कहाँ से शुरुआत करें?</h2>
+    </div>
 
-        <div class="chat-container">
-            <div style="font-size: 12px; opacity: 0.6; padding-left: 10px;">J.A.R.V.I.S. READY...</div>
-            <div style="display: flex; align-items: center; border-top: 1px solid rgba(0,255,255,0.1); padding-top: 5px;">
-                <input type="text" placeholder="Type a command...">
-                <button style="background: var(--glow); border: none; border-radius: 10px; padding: 10px 20px; font-weight: bold; cursor: pointer;">GO</button>
+    <div class="actions-grid">
+        <div class="action-card"><div class="icon-box">🖼️</div><div class="action-text">इमेज बनाएँ</div></div>
+        <div class="action-card"><div class="icon-box">🎸</div><div class="action-text">संगीत बनाएँ</div></div>
+        <div class="action-card"><div class="icon-box">🏏</div><div class="action-text">क्रिकेट अपडेट</div></div>
+        <div class="action-card"><div class="icon-box">📝</div><div class="action-text">कुछ भी लिखें</div></div>
+        <div class="action-card"><div class="icon-box">🎥</div><div class="action-text">वीडियो जनरेट</div></div>
+        <div class="action-card"><div class="icon-box">📰</div><div class="action-text">ताज़ा ख़बरें</div></div>
+        <div class="action-card"><div class="icon-box">🛠️</div><div class="action-text">कोडिंग हेल्प</div></div>
+        <div class="action-card"><div class="icon-box">🔋</div><div class="action-text">सिस्टम स्टेटस</div></div>
+    </div>
+
+    <div class="search-area">
+        <div class="search-bar">
+            <span style="font-size: 20px; margin-right: 10px;">+</span>
+            <input type="text" placeholder="Ask J.A.R.V.I.S...">
+            <div class="search-tools">
+                <span>🎙️</span>
+                <span style="color: var(--glow);">✨</span>
             </div>
         </div>
     </div>
-
-    <div id="admin-overlay">
-        <div class="close-btn" onclick="toggleAdmin()">CLOSE</div>
-        <h2 style="font-family: 'Orbitron'; font-size: 16px;">SURVEILLANCE FEED</h2>
-        <div class="log-box" id="activityFeed">Scanning...</div>
-    </div>
-
-    <div class="admin-trigger" onclick="toggleAdmin()"></div>
 
     <script type="module">
-        // Firebase Config (Your existing one)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        
-        const firebaseConfig = { /* Your Config Here */ };
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = { /* Your Existing Config */ };
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Activity Monitor Logic
-        window.toggleAdmin = () => {
-            const overlay = document.getElementById('admin-overlay');
-            overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
-        };
-
-        const q = query(collection(db, "user_activity"), orderBy("timestamp", "desc"));
-        onSnapshot(q, (snapshot) => {
-            const feed = document.getElementById('activityFeed');
-            feed.innerHTML = '';
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                feed.innerHTML += `<p style="font-size:12px; border-bottom:1px solid #111; padding:5px;">
-                    <b style="color:#fff;">${data.email}</b>: ${data.query}
-                </p>`;
-            });
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    document.getElementById('user-greeting').innerText = `नमस्ते, ${docSnap.data().nickname}!`;
+                }
+            } else {
+                window.location.href = 'index.html';
+            }
         });
-    </script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
-        
-        // Advanced Mesh
-        const geometry = new THREE.IcosahedronGeometry(2, 1);
-        const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.3 });
-        const core = new THREE.Mesh(geometry, material);
-        scene.add(core);
-        camera.position.z = 5;
-
-        function animate() {
-            requestAnimationFrame(animate);
-            core.rotation.y += 0.003;
-            core.rotation.x += 0.002;
-            renderer.render(scene, camera);
-        }
-        animate();
     </script>
 </body>
 </html>
