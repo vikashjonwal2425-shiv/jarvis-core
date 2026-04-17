@@ -2,48 +2,60 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>J.A.R.V.I.S. | STARK INDUSTRIES</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>J.A.R.V.I.S. | PRO</title>
     <style>
-        body { margin: 0; background: #000; color: #00ffff; font-family: 'JetBrains Mono', monospace; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        /* Central Pulse Reactor */
-        .reactor-container { height: 40%; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid rgba(0, 255, 255, 0.1); }
-        .reactor { width: 120px; height: 120px; border: 2px solid #00ffff; border-radius: 50%; box-shadow: 0 0 20px #00ffff, inset 0 0 20px #00ffff; animation: pulse 2s infinite; display: flex; align-items: center; justify-content: center; }
-        .inner-core { width: 40px; height: 40px; background: #00ffff; border-radius: 50%; box-shadow: 0 0 40px #00ffff; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #080a0c; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; }
 
-        /* Status Text */
-        .status-bar { padding: 10px 20px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; background: rgba(0, 255, 255, 0.05); }
+        /* Top Header */
+        .header { background: #111; padding: 15px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 16px; color: #00ffff; letter-spacing: 1px; }
+        .user-id { font-size: 10px; color: #666; }
 
-        /* Chat History */
-        #chat-log { flex-grow: 1; overflow-y: auto; padding: 20px; font-size: 13px; line-height: 1.6; }
-        .msg { margin-bottom: 15px; border-left: 2px solid rgba(0, 255, 255, 0.2); padding-left: 10px; }
-        .user-tag { color: #fff; font-weight: bold; margin-bottom: 4px; display: block; }
-        .jarvis-tag { color: #00ffff; font-weight: bold; margin-bottom: 4px; display: block; }
+        /* Chat Window */
+        #chat-window { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
+        .user { align-self: flex-end; background: #00ffff; color: #000; border-bottom-right-radius: 2px; }
+        .ai { align-self: flex-start; background: #1c1f23; border-bottom-left-radius: 2px; border: 1px solid #333; }
 
-        /* Clean Input */
-        .input-area { padding: 20px; background: #050505; border-top: 1px solid rgba(0, 255, 255, 0.1); display: flex; gap: 10px; }
-        input { flex-grow: 1; background: transparent; border: 1px solid #111; border-bottom: 1px solid #00ffff; color: #fff; padding: 12px; outline: none; font-family: 'JetBrains Mono'; }
-        button { background: #00ffff; border: none; padding: 0 20px; color: #000; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; }
+        /* Input Area - Floating & Fixed */
+        .input-container { background: #111; padding: 10px; border-top: 1px solid #222; }
+        .toolbar { display: flex; gap: 15px; padding: 5px 10px 10px 10px; }
+        .tool-btn { background: transparent; border: none; color: #888; cursor: pointer; font-size: 18px; }
+
+        .input-wrapper { display: flex; background: #1c1f23; border-radius: 25px; padding: 5px 15px; align-items: center; border: 1px solid #333; }
+        input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px; outline: none; font-size: 15px; }
+        .send-btn { background: #00ffff; border: none; width: 35px; height: 35px; border-radius: 50%; color: #000; font-weight: bold; margin-left: 10px; display: flex; align-items: center; justify-content: center; }
+
+        /* Loader */
+        #loader { display: none; font-size: 10px; color: #00ffff; margin-left: 15px; padding-bottom: 5px; }
     </style>
 </head>
 <body>
 
-    <div class="status-bar">Systems: Online | Protocol: Mark 1 | User: Vikas</div>
-
-    <div class="reactor-container">
-        <div class="reactor"><div class="inner-core"></div></div>
+    <div class="header">
+        <h1>J.A.R.V.I.S.</h1>
+        <div class="user-id">ADMIN: VIKASH</div>
     </div>
 
-    <div id="chat-log">
-        <div class="msg"><span class="jarvis-tag">J.A.R.V.I.S. :</span> सर, मैं आपके निर्देशों के लिए तैयार हूँ। आप क्या करना चाहेंगे?</div>
+    <div id="chat-window">
+        <div class="msg ai">प्रणाम विकास जी। सिस्टम तैयार है। मैं आपकी क्या सेवा कर सकता हूँ?</div>
     </div>
 
-    <div class="input-area">
-        <input type="text" id="userInput" placeholder="Enter Command..." autocomplete="off">
-        <button onclick="sendCmd()">SEND</button>
+    <div id="loader">جار्विस सोच रहा है...</div>
+
+    <div class="input-container">
+        <div class="toolbar">
+            <button class="tool-btn" onclick="alert('कैमरा ओपन हो रहा है...')">📷</button>
+            <button class="tool-btn" onclick="alert('फाइल मैनेजर ओपन हो रहा है...')">📁</button>
+            <button class="tool-btn" onclick="alert('माइक एक्टिवेट हो रहा है...')">🎤</button>
+        </div>
+        
+        <div class="input-wrapper">
+            <input type="text" id="userInput" placeholder="यहाँ संदेश लिखें..." autocomplete="off">
+            <button class="send-btn" onclick="askJarvis()">➔</button>
+        </div>
     </div>
 
     <script type="module">
@@ -56,39 +68,41 @@
 
         onAuthStateChanged(auth, (user) => { if(!user) window.location.replace('index.html'); });
 
-        window.sendCmd = async () => {
+        window.askJarvis = async () => {
             const input = document.getElementById('userInput');
-            const val = input.value.trim();
-            if(!val) return;
+            const text = input.value.trim();
+            if(!text) return;
 
-            addMsg('Vikas', val, 'user-tag');
+            addMsg(text, 'user');
             input.value = "";
+            document.getElementById('loader').style.display = "block";
 
             try {
-                // Gemini AI Integration
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${firebaseConfig.apiKey}`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ contents: [{ parts: [{ text: "You are JARVIS, the AI from Iron Man. Keep your answers brief, professional, and address the user as 'Sir' or 'Boss'. User input: " + val }] }] })
+                    body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
                 });
                 const data = await res.json();
-                const reply = data.candidates[0].content.parts[0].text;
-                addMsg('J.A.R.V.I.S.', reply, 'jarvis-tag');
+                addMsg(data.candidates[0].content.parts[0].text, 'ai');
             } catch (e) {
-                addMsg('System', 'कलेक्शन में एरर है, सर।', 'jarvis-tag');
+                addMsg("क्षमा करें सर, कुछ तकनीकी समस्या है।", 'ai');
+            } finally {
+                document.getElementById('loader').style.display = "none";
             }
         };
 
-        function addMsg(user, text, tagClass) {
+        function addMsg(t, c) {
             const div = document.createElement('div');
-            div.className = 'msg';
-            div.innerHTML = `<span class="${tagClass}">${user} :</span> ${text}`;
-            const log = document.getElementById('chat-log');
-            log.appendChild(div);
-            log.scrollTop = log.scrollHeight;
+            div.className = `msg ${c}`;
+            div.innerText = t;
+            const win = document.getElementById('chat-window');
+            win.appendChild(div);
+            win.scrollTop = win.scrollHeight;
         }
 
-        document.getElementById('userInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendCmd(); });
+        // Enter key support
+        document.getElementById('userInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') askJarvis(); });
     </script>
 </body>
 </html>
