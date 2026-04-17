@@ -3,67 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>J.A.R.V.I.S. | CORE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@400&display=swap" rel="stylesheet">
+    <title>J.A.R.V.I.S. | SUPREME</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root { --glow: #00ffff; --bg: #000; }
         body { margin: 0; background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* --- JARVIS 3D VIRTUAL FACE (ARC REACTOR) --- */
-        .core-container { height: 250px; display: flex; align-items: center; justify-content: center; position: relative; background: radial-gradient(circle, #001a1a 0%, #000 70%); }
-        
+        /* --- BIGGER & BETTER ARC REACTOR --- */
+        .visualizer { height: 35vh; min-height: 250px; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid #111; background: radial-gradient(circle, #001a1a 0%, #000 80%); }
         .ring { position: absolute; border-radius: 50%; border: 2px solid transparent; border-top: 2px solid var(--glow); border-bottom: 2px solid var(--glow); animation: rotate 2s linear infinite; }
-        .ring-1 { width: 140px; height: 140px; border-top-width: 4px; border-right: 2px solid var(--glow); animation-duration: 3s; opacity: 0.8; }
-        .ring-2 { width: 110px; height: 110px; border-left: 2px solid var(--glow); animation-direction: reverse; animation-duration: 2s; opacity: 0.6; }
-        .ring-3 { width: 80px; height: 80px; border-top: 2px solid #fff; animation-duration: 1s; }
-        .core-dot { width: 20px; height: 20px; background: var(--glow); border-radius: 50%; box-shadow: 0 0 30px var(--glow), 0 0 60px var(--glow); animation: pulse 1.5s ease-in-out infinite; }
-
+        .r1 { width: 180px; height: 180px; border-top-width: 4px; border-right: 2px solid var(--glow); animation-duration: 4s; }
+        .r2 { width: 140px; height: 140px; border-left: 2px solid var(--glow); animation-direction: reverse; animation-duration: 2.5s; opacity: 0.7; }
+        .r3 { width: 100px; height: 100px; border-top: 2px solid #fff; animation-duration: 1.5s; opacity: 0.9; }
+        .core { width: 25px; height: 25px; background: var(--glow); border-radius: 50%; box-shadow: 0 0 40px var(--glow); animation: pulse 1.5s ease-in-out infinite; }
+        
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
 
         /* --- CHAT AREA --- */
-        #chat-screen { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; }
-        .msg { max-width: 80%; padding: 12px; border-radius: 12px; font-size: 14px; line-height: 1.4; animation: fadeIn 0.3s ease; }
-        .user-msg { align-self: flex-end; background: #111; color: var(--glow); border: 1px solid #222; }
-        .jarvis-msg { align-self: flex-start; background: rgba(0, 255, 255, 0.05); border-left: 3px solid var(--glow); }
+        #chat { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .msg { max-width: 85%; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.5; animation: fadeInUp 0.3s ease; }
+        .jarvis { align-self: flex-start; background: rgba(0,255,255,0.05); border-left: 3px solid var(--glow); color: #e0e0e0; }
+        .user { align-self: flex-end; background: #111; color: var(--glow); border: 1px solid #222; }
 
-        /* --- FOOTER & INPUT --- */
-        .footer { padding: 15px; background: #000; border-top: 1px solid #111; }
-        .bar { background: #111; border-radius: 30px; display: flex; align-items: center; padding: 5px 15px; border: 1px solid #333; }
-        .bar input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 12px; outline: none; font-size: 16px; }
-        .btn-svg svg { width: 24px; height: 24px; fill: var(--glow); cursor: pointer; }
-        
-        .actions { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; }
-        .chip { background: #080808; border: 1px solid #222; padding: 6px 15px; border-radius: 20px; font-size: 11px; color: #888; white-space: nowrap; }
+        /* --- ACTIONS & INPUT --- */
+        .controls { padding: 15px; background: #000; border-top: 1px solid #111; }
+        .chips { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
+        .chips::-webkit-scrollbar { display: none; }
+        .chip { background: #0a0a0a; border: 1px solid #222; padding: 8px 16px; border-radius: 20px; font-size: 12px; white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .chip:active { border-color: var(--glow); background: #001a1a; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .bar { background: #121212; border-radius: 30px; display: flex; align-items: center; padding: 5px 15px; border: 1px solid #333; }
+        .bar input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 12px; font-size: 16px; outline: none; }
+        .send-btn { background: transparent; border: none; padding: 8px; display: flex; align-items: center; cursor: pointer; }
+        .send-btn svg { width: 24px; height: 24px; fill: var(--glow); }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="core-container">
-        <div class="ring ring-1"></div>
-        <div class="ring ring-2"></div>
-        <div class="ring ring-3"></div>
-        <div class="core-dot"></div>
-        <div style="position: absolute; bottom: 10px; font-family: 'Orbitron'; font-size: 10px; color: var(--glow);">CORE ONLINE</div>
+    <div class="visualizer">
+        <div class="ring r1"></div>
+        <div class="ring r2"></div>
+        <div class="ring r3"></div>
+        <div class="core"></div>
+        <div style="position: absolute; bottom: 15px; font-family: 'Orbitron'; font-size: 11px; color: var(--glow); letter-spacing: 2px;">CORE ONLINE</div>
     </div>
 
-    <div id="chat-screen">
-        <div class="msg jarvis-msg">सिस्टम कैलिब्रेटेड। स्वागत है विकास जी। हम शुरू करने के लिए तैयार हैं।</div>
+    <div id="chat">
+        <div class="msg jarvis">सिस्टम पूरी तरह ऑनलाइन है, विकास जी। मैं आपकी क्या मदद कर सकता हूँ?</div>
     </div>
 
-    <div class="footer">
-        <div class="actions">
-            <div class="chip" onclick="quick('इमेज बनाओ: ')">🖼️ IMAGE</div>
-            <div class="chip" onclick="quick('गाना लिखो: ')">🎵 MUSIC</div>
-            <div class="chip" onclick="quick('News: ')">📰 NEWS</div>
+    <div class="controls">
+        <div class="chips">
+            <div class="chip" onclick="autoFill('एक शानदार फोटो बनाओ ')">🖼️ IMAGE</div>
+            <div class="chip" onclick="autoFill('कोई मजेदार जोक सुनाओ')">😂 JOKE</div>
+            <div class="chip" onclick="autoFill('आज की ताज़ा खबर क्या है?')">📰 NEWS</div>
+            <div class="chip" onclick="autoFill('मुझे एक कोडिंग प्रॉब्लम है')">💻 CODE</div>
         </div>
         <div class="bar">
-            <input type="text" id="userInput" placeholder="Listening for command..." autocomplete="off">
-            <div class="btn-svg" onclick="askJarvis()">
+            <input type="text" id="userInput" placeholder="Ask J.A.R.V.I.S..." autocomplete="off">
+            <button class="send-btn" onclick="ask()">
                 <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-            </div>
+            </button>
         </div>
     </div>
 
@@ -75,14 +78,14 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        onAuthStateChanged(auth, (user) => { if(!user) window.location.replace('index.html'); });
+        onAuthStateChanged(auth, (user) => { if (!user) window.location.replace('index.html'); });
 
-        window.askJarvis = async () => {
+        window.ask = async () => {
             const input = document.getElementById('userInput');
             const val = input.value.trim();
             if(!val) return;
 
-            appendMsg(val, 'user-msg');
+            addMsg(val, 'user');
             input.value = "";
 
             try {
@@ -92,20 +95,23 @@
                     body: JSON.stringify({ contents: [{ parts: [{ text: val }] }] })
                 });
                 const data = await res.json();
-                appendMsg(data.candidates[0].content.parts[0].text, 'jarvis-msg');
-            } catch (e) { appendMsg("लिंक में समस्या है, सर।", 'jarvis-msg'); }
+                addMsg(data.candidates[0].content.parts[0].text, 'jarvis');
+            } catch (e) { addMsg("सर्वर कनेक्शन में समस्या है, सर।", 'jarvis'); }
         };
 
-        function appendMsg(t, c) {
+        function addMsg(t, c) {
             const d = document.createElement('div');
             d.className = `msg ${c}`;
             d.innerText = t;
-            const screen = document.getElementById('chat-screen');
-            screen.appendChild(d);
-            screen.scrollTop = screen.scrollHeight;
+            const chat = document.getElementById('chat');
+            chat.appendChild(d);
+            chat.scrollTop = chat.scrollHeight;
         }
 
-        window.quick = (c) => { document.getElementById('userInput').value = c; document.getElementById('userInput').focus(); };
+        window.autoFill = (c) => { 
+            document.getElementById('userInput').value = c; 
+            document.getElementById('userInput').focus(); 
+        };
     </script>
 </body>
 </html>
