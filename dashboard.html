@@ -3,82 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S. | Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <title>J.A.R.V.I.S. | NEXUS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; background: #000; color: #00ffff; font-family: 'Orbitron', sans-serif; display: flex; height: 100vh; }
-        /* Sidebar */
-        .sidebar { width: 250px; background: rgba(0, 20, 30, 0.8); border-right: 1px solid #00ffff; padding: 20px; display: flex; flex-direction: column; }
-        .nav-item { padding: 15px; cursor: pointer; border-bottom: 1px solid rgba(0,255,255,0.1); transition: 0.3s; }
-        .nav-item:hover { background: rgba(0,255,255,0.1); }
+        :root { --glow: #00ffff; --bg: #000; }
+        body { margin: 0; background: var(--bg); color: var(--glow); font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; }
         
-        /* Main Chat Area */
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; position: relative; }
-        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; }
-        
-        .chat-window { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .message { padding: 10px; border-radius: 5px; max-width: 70%; }
-        .user-msg { align-self: flex-end; background: rgba(0,255,255,0.2); border: 1px solid #00ffff; }
-        .jarvis-msg { align-self: flex-start; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.3); }
-        
-        .input-area { padding: 20px; background: rgba(0,0,0,0.8); display: flex; gap: 10px; }
-        input { flex-grow: 1; background: transparent; border: 1px solid #00ffff; color: #fff; padding: 12px; outline: none; }
-        button { background: #00ffff; color: #000; border: none; padding: 10px 25px; cursor: pointer; font-weight: bold; }
+        #canvas-container { position: absolute; width: 100%; height: 100%; z-index: 0; }
+
+        /* Onboarding Overlay */
+        #onboarding { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .setup-box { width: 85%; max-width: 350px; text-align: center; border: 1px solid var(--glow); padding: 25px; background: rgba(0,20,30,0.9); }
+        input { width: 90%; background: transparent; border: none; border-bottom: 1px solid var(--glow); color: #fff; padding: 10px; margin: 10px 0; outline: none; font-family: 'Rajdhani'; }
+
+        /* Main UI */
+        .ui-layer { position: relative; z-index: 10; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; box-sizing: border-box; pointer-events: none; }
+        .ui-layer * { pointer-events: auto; }
+
+        .top-info { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 2px; }
+        .welcome-msg { font-size: 16px; font-family: 'Orbitron'; margin-top: 10px; }
+
+        /* Quick Shortcuts */
+        .shortcuts { display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; }
+        .tag { font-size: 10px; border: 1px solid rgba(0,255,255,0.4); padding: 4px 10px; border-radius: 15px; cursor: pointer; }
+
+        .chat-hub { background: rgba(0,15,25,0.8); backdrop-filter: blur(10px); border: 1px solid rgba(0,255,255,0.3); border-radius: 15px; padding: 12px; margin-bottom: 10px; }
+        .input-wrap { display: flex; align-items: center; }
+        .go-btn { background: var(--glow); color: #000; border: none; padding: 8px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <h3 style="font-size: 14px; letter-spacing: 2px;">VIKASH INDUSTRIES</h3>
-        <div class="nav-item">Core Chat</div>
-        <div class="nav-item">Image Gen</div>
-        <div class="nav-item">My Plan: <span id="user-plan">Free</span></div>
-        <div style="margin-top: auto;" class="nav-item" onclick="logout()">Logout</div>
+    <div id="onboarding">
+        <div class="setup-box">
+            <h3 style="font-family:'Orbitron'; font-size:14px;">IDENTITY SETUP</h3>
+            <input type="text" id="setup-nick" placeholder="Enter Nickname">
+            <input type="tel" id="setup-phone" placeholder="Mobile Number">
+            <input type="date" id="setup-dob">
+            <button class="go-btn" style="width:100%; margin-top:15px;" onclick="saveProfile()">COMPLETE SETUP</button>
+        </div>
     </div>
 
-    <div class="main-content">
-        <div id="canvas-container"></div>
-        <div class="chat-window" id="chat">
-            <div class="message jarvis-msg">Systems active. How can I help you today?</div>
+    <div id="canvas-container"></div>
+
+    <div class="ui-layer">
+        <div class="top-section">
+            <div class="top-info">
+                <div>VIKASH INDUSTRIES</div>
+                <div style="color:#00ff00;">CORE ONLINE</div>
+            </div>
+            <div class="welcome-msg" id="display-name">Initializing...</div>
         </div>
-        <div class="input-area">
-            <input type="text" id="userInput" placeholder="Send a command...">
-            <button onclick="sendMessage()">SEND</button>
+
+        <div class="bottom-section">
+            <div class="shortcuts">
+                <div class="tag">AI Image</div>
+                <div class="tag">Latest News</div>
+                <div class="tag">Weather</div>
+            </div>
+            <div class="chat-hub">
+                <div class="input-wrap">
+                    <input type="text" id="userIn" placeholder="Awaiting command..." style="border:none; margin:0; flex-grow:1;">
+                    <button class="go-btn">EXECUTE</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { /* वही कॉन्फ़िग यहाँ डालें जो index.html में है */ };
+        const firebaseConfig = { /* Your Config */ };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        window.sendMessage = async () => {
-            const input = document.getElementById('userInput');
-            const msg = input.value;
-            if(!msg) return;
-
-            // 1. UI में मैसेज दिखाओ
-            document.getElementById('chat').innerHTML += `<div class="message user-msg">${msg}</div>`;
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) return window.location.href = 'index.html';
             
-            // 2. एडमिन के लिए डेटा लॉग करो (यही वो कंट्रोल है जो आपको चाहिए)
-            await addDoc(collection(db, "user_activity"), {
-                uid: auth.currentUser.uid,
-                email: auth.currentUser.email,
-                query: msg,
-                timestamp: new Date()
-            });
+            const docRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(docRef);
 
-            input.value = '';
+            if (docSnap.exists()) {
+                document.getElementById('display-name').innerText = `Hello, ${docSnap.data().nickname}`;
+            } else {
+                document.getElementById('onboarding').style.display = 'flex';
+            }
+        });
+
+        window.saveProfile = async () => {
+            const nick = document.getElementById('setup-nick').value;
+            const phone = document.getElementById('setup-phone').value;
+            const dob = document.getElementById('setup-dob').value;
+            if(!nick || !phone || !dob) return alert("Fill all details!");
+
+            await setDoc(doc(db, "users", auth.currentUser.uid), {
+                nickname: nick, phone: phone, dob: dob, email: auth.currentUser.email
+            });
+            location.reload();
+        };
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        const group = new THREE.Group();
+        // मल्टीपल रिंग्स (Rings) बनाना
+        const createRing = (radius, speed) => {
+            const geometry = new THREE.TorusGeometry(radius, 0.02, 16, 100);
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.5 });
+            const ring = new THREE.Mesh(geometry, material);
+            ring.rotation.x = Math.random() * Math.PI;
+            ring.speed = speed;
+            group.add(ring);
+            return ring;
         };
 
-        window.logout = () => signOut(auth).then(() => location.href = 'index.html');
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    </body>
-</html>
+        const rings = [createRing(1.5, 0.01), createRing(1.8, 0.02), createRing(2.1, -0.015)];
+        scene.add(group);
+        camera.position.z = 5;
 
+        function animate() {
+            requestAnimationFrame(animate);
+            rings.forEach(r => { r.rotation.y += r.speed; r.rotation.x += r.speed/2; });
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>
