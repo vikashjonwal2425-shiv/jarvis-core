@@ -3,66 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>J.A.R.V.I.S. | SUPREME</title>
+    <title>J.A.R.V.I.S. | FIXED</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root { --glow: #00ffff; --bg: #000; }
         body { margin: 0; background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
-        /* Popup for First-Time Identity */
+        /* Onboarding Popup */
         #onboarding { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .setup-card { width: 100%; max-width: 320px; border: 1px solid var(--glow); padding: 25px; border-radius: 15px; background: #080808; text-align: center; }
-        .setup-card input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #333; color: #fff; padding: 12px 0; margin: 15px 0; outline: none; font-size: 16px; }
+        .setup-card { width: 100%; max-width: 340px; border: 1px solid var(--glow); padding: 25px; border-radius: 15px; background: #080808; box-shadow: 0 0 20px rgba(0,255,255,0.2); text-align: left; }
+        .setup-card h3 { font-family: 'Orbitron'; color: var(--glow); margin-top: 0; text-align: center; font-size: 18px; }
+        .setup-card input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #333; color: #fff; padding: 12px 0; margin: 10px 0; outline: none; font-size: 15px; box-sizing: border-box; }
         .setup-card input:focus { border-color: var(--glow); }
-        .setup-card button { background: var(--glow); border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; }
+        .optional { font-size: 11px; color: #666; margin-top: -8px; display: block; margin-bottom: 10px; }
+        .setup-card button { background: var(--glow); border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; margin-top: 15px; color: #000; }
 
         .header { padding: 15px 20px; font-family: 'Orbitron'; color: var(--glow); font-size: 12px; letter-spacing: 2px; }
         .hero { padding: 5px 20px 15px; }
         .hero h1 { font-size: 24px; margin: 0; font-weight: 400; }
-        .hero h2 { font-size: 18px; color: #444; margin: 2px 0 0; }
-
-        .main-list { padding: 0 20px; flex-grow: 1; overflow-y: auto; padding-bottom: 100px; }
-        .item { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 12px; padding: 14px 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; font-size: 14px; transition: 0.2s; }
-        .item:active { background: #111; border-color: var(--glow); transform: scale(0.98); }
-        .item span { font-size: 18px; }
-
-        .search-fixed { position: fixed; bottom: 0; width: 100%; padding: 15px; background: linear-gradient(transparent, #000 30%); box-sizing: border-box; }
-        .bar { background: #121212; border-radius: 30px; display: flex; align-items: center; padding: 5px 15px; border: 1px solid #222; }
-        .bar input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 12px; font-size: 16px; outline: none; }
         
-        .icn-btn { background: transparent; border: none; padding: 8px; display: flex; align-items: center; cursor: pointer; }
-        .icn-btn svg { width: 22px; height: 22px; fill: #666; }
-        .send svg { fill: var(--glow); }
+        /* Slim List UI */
+        .list { padding: 0 20px; flex-grow: 1; overflow-y: auto; padding-bottom: 100px; }
+        .list-item { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 10px; padding: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 15px; font-size: 14px; }
+
+        /* Search & Send Button Fix */
+        .footer { position: fixed; bottom: 0; width: 100%; padding: 15px; background: #000; box-sizing: border-box; }
+        .bar { background: #121212; border-radius: 30px; display: flex; align-items: center; padding: 5px 15px; border: 1px solid #333; }
+        .bar input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 12px; font-size: 16px; outline: none; }
+        .btn-svg { background: transparent; border: none; padding: 8px; cursor: pointer; display: flex; align-items: center; }
+        .btn-svg svg { width: 22px; height: 22px; fill: #666; }
+        .send-active svg { fill: var(--glow); }
     </style>
 </head>
 <body>
 
     <div id="onboarding">
         <div class="setup-card">
-            <h3 style="font-family:'Orbitron'; color:var(--glow); margin-top:0;">INITIALIZING...</h3>
-            <p style="font-size:12px; color:#666;">Identity Verification Required</p>
-            <input type="text" id="nick" placeholder="Nickname (e.g. Boss)">
-            <input type="tel" id="ph" placeholder="Mobile Number">
-            <button onclick="saveIdentity()">GRANT ACCESS</button>
+            <h3>IDENTITY SETUP</h3>
+            <input type="text" id="fullname" placeholder="Full Name (ज़रूरी)">
+            <input type="text" id="nick" placeholder="Nickname (ज़रूरी)">
+            <input type="tel" id="ph" placeholder="Mobile Number (Optional)">
+            <span class="optional">मोबाइल नंबर देना ज़रूरी नहीं है</span>
+            <button onclick="saveIdentity()">START J.A.R.V.I.S.</button>
         </div>
     </div>
 
     <div class="header">J.A.R.V.I.S. V4.0</div>
-    <div class="hero"><h1 id="greet">नमस्ते...</h1><h2>क्या हुक्म है?</h2></div>
+    <div class="hero"><h1 id="greet">Initializing...</h1></div>
 
-    <div class="main-list">
-        <div class="item"><span>🖼️</span> इमेज जनरेट करें</div>
-        <div class="item"><span>🎵</span> संगीत बनाएँ</div>
-        <div class="item"><span>💻</span> कोडिंग में सहायता</div>
-        <div class="item"><span>📰</span> ताज़ा ख़बरें</div>
+    <div class="list">
+        <div class="list-item"><span>🖼️</span> इमेज जनरेट करें</div>
+        <div class="list-item"><span>🎵</span> संगीत बनाएँ</div>
+        <div class="list-item"><span>📰</span> ताज़ा ख़बरें</div>
     </div>
 
-    <div class="search-fixed">
+    <div class="footer">
         <div class="bar">
-            <button class="icn-btn"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
-            <input type="text" id="cmdInput" placeholder="Ask J.A.R.V.I.S..." autocomplete="off">
-            <button class="icn-btn"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
-            <button class="icn-btn send" onclick="fire()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+            <button class="btn-svg"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
+            <input type="text" id="userInput" placeholder="Ask J.A.R.V.I.S..." autocomplete="off">
+            <button class="btn-svg"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
+            <button class="btn-svg send-active" onclick="sendMessage()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
         </div>
     </div>
 
@@ -84,16 +84,15 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        setPersistence(auth, browserLocalPersistence).then(() => {
+        // LOGIN FIX: अब यह ब्राउज़र में लॉगिन को मज़बूती से पकड़ेगा
+        async function checkUser() {
+            await setPersistence(auth, browserLocalPersistence);
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
-                    // ADMIN SECURITY CHECK
                     if (user.email !== "vikashjonwal2406@gmail.com") {
-                        alert("Unauthorized User Detected!");
                         window.location.href = 'index.html';
                         return;
                     }
-                    
                     const snap = await getDoc(doc(db, "users", user.uid));
                     if (snap.exists()) {
                         document.getElementById('greet').innerText = `नमस्ते, ${snap.data().nickname}!`;
@@ -105,20 +104,33 @@
                     window.location.href = 'index.html';
                 }
             });
-        });
+        }
+        checkUser();
 
         window.saveIdentity = async () => {
+            const f = document.getElementById('fullname').value;
             const n = document.getElementById('nick').value;
-            const p = document.getElementById('ph').value;
-            if(n && p) {
-                await setDoc(doc(db, "users", auth.currentUser.uid), { nickname: n, phone: p, email: auth.currentUser.email });
+            const p = document.getElementById('ph').value; // Optional
+
+            if(f && n) {
+                await setDoc(doc(db, "users", auth.currentUser.uid), {
+                    fullName: f,
+                    nickname: n,
+                    phone: p || "Not Provided",
+                    email: auth.currentUser.email
+                });
                 location.reload();
-            } else { alert("Please enter both details!"); }
+            } else {
+                alert("कृपया अपना पूरा नाम और निकनेम भरें!");
+            }
         };
 
-        window.fire = () => {
-            const val = document.getElementById('cmdInput').value;
-            if(val) { alert("Command Sent: " + val); document.getElementById('cmdInput').value = ""; }
+        window.sendMessage = () => {
+            const val = document.getElementById('userInput').value;
+            if(val) {
+                alert("मैसेज सेंड किया गया: " + val);
+                document.getElementById('userInput').value = "";
+            }
         };
     </script>
 </body>
